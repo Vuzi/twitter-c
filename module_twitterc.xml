@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_twitterc" default="compile.module.twitterc">
+  <dirname property="module.twitterc.basedir" file="${ant.file.module_twitterc}"/>
+  
+  <property name="module.jdk.home.twitterc" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.twitterc" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.twitterc" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.twitterc" value="-encoding windows-1252 -source 8 ${compiler.args}"/>
+  
+  <property name="twitterc.output.dir" value="${module.twitterc.basedir}/out/production/TwitterC"/>
+  <property name="twitterc.testoutput.dir" value="${module.twitterc.basedir}/out/test/TwitterC"/>
+  
+  <path id="twitterc.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="twitterc.module.production.classpath">
+    <path refid="${module.jdk.classpath.twitterc}"/>
+    <pathelement location="${basedir}/.idea/libraries/twitter4j-async-4.0.4.jar"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.twitter4j-examples-4.0.4.classpath"/>
+    <path refid="library.twitter4j-media-support-4.0.4.classpath"/>
+    <path refid="library.twitter4j-stream-4.0.4.classpath"/>
+  </path>
+  
+  <path id="twitterc.runtime.production.module.classpath">
+    <pathelement location="${twitterc.output.dir}"/>
+    <pathelement location="${basedir}/.idea/libraries/twitter4j-async-4.0.4.jar"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.twitter4j-examples-4.0.4.classpath"/>
+    <path refid="library.twitter4j-media-support-4.0.4.classpath"/>
+    <path refid="library.twitter4j-stream-4.0.4.classpath"/>
+  </path>
+  
+  <path id="twitterc.module.classpath">
+    <path refid="${module.jdk.classpath.twitterc}"/>
+    <pathelement location="${twitterc.output.dir}"/>
+    <pathelement location="${basedir}/.idea/libraries/twitter4j-async-4.0.4.jar"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.twitter4j-examples-4.0.4.classpath"/>
+    <path refid="library.twitter4j-media-support-4.0.4.classpath"/>
+    <path refid="library.twitter4j-stream-4.0.4.classpath"/>
+  </path>
+  
+  <path id="twitterc.runtime.module.classpath">
+    <pathelement location="${twitterc.testoutput.dir}"/>
+    <pathelement location="${twitterc.output.dir}"/>
+    <pathelement location="${basedir}/.idea/libraries/twitter4j-async-4.0.4.jar"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.twitter4j-examples-4.0.4.classpath"/>
+    <path refid="library.twitter4j-media-support-4.0.4.classpath"/>
+    <path refid="library.twitter4j-stream-4.0.4.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.twitterc">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.twitterc">
+    <patternset refid="excluded.from.module.twitterc"/>
+  </patternset>
+  
+  <path id="twitterc.module.sourcepath">
+    <dirset dir="${module.twitterc.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.twitterc" depends="compile.module.twitterc.production,compile.module.twitterc.tests" description="Compile module TwitterC"/>
+  
+  <target name="compile.module.twitterc.production" depends="register.custom.compilers" description="Compile module TwitterC; production classes">
+    <mkdir dir="${twitterc.output.dir}"/>
+    <javac2 destdir="${twitterc.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.twitterc}/javac">
+      <compilerarg line="${compiler.args.twitterc}"/>
+      <bootclasspath refid="twitterc.module.bootclasspath"/>
+      <classpath refid="twitterc.module.production.classpath"/>
+      <src refid="twitterc.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.twitterc"/>
+    </javac2>
+    
+    <copy todir="${twitterc.output.dir}">
+      <fileset dir="${module.twitterc.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.twitterc.tests" depends="register.custom.compilers,compile.module.twitterc.production" description="compile module TwitterC; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.twitterc" description="cleanup module">
+    <delete dir="${twitterc.output.dir}"/>
+    <delete dir="${twitterc.testoutput.dir}"/>
+  </target>
+</project>
