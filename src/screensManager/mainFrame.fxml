@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="800.0" maxWidth="600.0" minHeight="800.0" minWidth="600.0" prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #96C9e6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="screensManager.MainFrameController">
+   <children>
+      <Button layoutX="57.0" layoutY="375.0" mnemonicParsing="false" onAction="#change" text="Button" />
+      <ListView fx:id="listview" onMouseClicked="#mouseClicked" prefHeight="695.0" prefWidth="450.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
+      <TextField fx:id="twwetLabel" layoutX="145.0" layoutY="20.0" prefHeight="30.0" prefWidth="450.0" promptText="Entrez votre Tweet" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </TextField>
+      <Button fx:id="twitBtn" layoutX="475.0" layoutY="62.0" mnemonicParsing="false" onAction="#sendTweet" prefHeight="25.0" prefWidth="111.0" style="-fx-border-color: black; -fx-border-radius: 5;" text="Twitter" textFill="#000b17" AnchorPane.leftAnchor="484.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0">
+         <effect>
+            <Glow level="0.1" />
+         </effect>
+         <font>
+            <Font name="Batang" size="13.0" />
+         </font>
+      </Button>
+      <ImageView fx:id="userProfil" fitHeight="120.0" fitWidth="120.0" layoutX="6.0" layoutY="167.0" onMouseClicked="#userProfilClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="20.0" />
+   </children>
+</AnchorPane>
