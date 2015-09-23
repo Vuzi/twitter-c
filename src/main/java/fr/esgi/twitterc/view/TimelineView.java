@@ -16,11 +16,9 @@ import javafx.scene.input.MouseEvent;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
-import javax.swing.*;
 import java.net.URL;
 import java.util.*;
 import java.util.TimerTask;
-import java.util.Vector;
 import java.util.Timer;
 
 /**
@@ -65,13 +63,13 @@ public class TimelineView extends ViewController {
         tagName.setText("@" + App.getUser().getScreenName());
 
         updateInfo();
-
+    /*
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 updateInfo();
             }
-        }, 0, 60000); // Every minute
+        }, 0, 120000); // Every 2 */
     }
 
     @Override
@@ -95,7 +93,7 @@ public class TimelineView extends ViewController {
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getButton().name().equals("PRIMARY")) {
                     if (mouseEvent.getClickCount() == 2) {
-                        App.setTweetNumber(String.valueOf(timeline.get(listview.getSelectionModel().getSelectedIndex()).getId()));
+                        App.TWEETNUMBER = timeline.get(listview.getSelectionModel().getSelectedIndex()).getId();
                         getAppController().createWindow("Twwet", "TweetView.fxml");
                     }
                 }

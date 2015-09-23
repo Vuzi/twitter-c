@@ -15,7 +15,7 @@ public class App {
     public static ConfigurationBuilder builder = new ConfigurationBuilder();
     public static Twitter TWITTER;
     private static RequestToken requestToken;
-    public static String TWEETNUMBER ;
+    public static Long TWEETNUMBER ;
 
     public static void loadTwitter (){
 
@@ -126,22 +126,16 @@ public class App {
         return user;
     }
 
-    public static String showTweet(String tweetID){
+    public static Status showTweet(){
 
-        String result = "";
+        Status status = null;
         try {
-            Status status = TWITTER.showStatus(Long.parseLong(tweetID));
-            if (status == null) { //
-                // don't know if needed - T4J docs are very bad
-            } else {
-               result =  status.getText();
-            }
+            status = TWITTER.showStatus(TWEETNUMBER);
+
         } catch (TwitterException e) {
             System.err.print("Failed to search tweets: " + e.getMessage());
         }
-        return result;
+        return status;
     }
-
-    public static void setTweetNumber( String num){TWEETNUMBER = num;}
 
 }
