@@ -5,6 +5,7 @@ import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.web.WebView;
 import twitter4j.User;
 
@@ -15,6 +16,7 @@ public class ProfileView extends ViewController {
 
     public WebView webview;
     public ImageView coverImage;
+    public AnchorPane background;
     public ImageView profilImage;
     public Label name;
     public Label tagName;
@@ -30,16 +32,19 @@ public class ProfileView extends ViewController {
 
     @Override
     protected void onShow() {
-        System.out.println(App.getUser());
         User user = App.getUser();
 
         // Set the banner image
         if(user.getProfileBannerURL() != null){
+            // Get image
             String imageURL = user.getProfileBannerURL();
-
             imageURL =  imageURL.replace("_normal","");
             Image image = new Image(imageURL);
-            coverImage.setImage(image);
+
+            // Add background
+            BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, true, false);
+            BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+            this.background.setBackground(new Background(backgroundImage));
         }
 
         // Set profil image
