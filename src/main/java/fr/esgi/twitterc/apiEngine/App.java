@@ -117,4 +117,15 @@ public class App {
         }
         return true;
     }
+
+    public static User getUser()
+    {
+        User user = null;
+        try {
+            user = TWITTER.showUser(TWITTER.getId());
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

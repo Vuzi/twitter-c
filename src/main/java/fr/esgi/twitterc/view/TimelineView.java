@@ -45,7 +45,6 @@ public class TimelineView extends ViewController {
 
     @Override
     protected void onShow() {
-        System.out.println(App.getUserProfilImage());
         Image image = new Image(App.getUserProfilImage());
         userProfil.setImage(image);
     }
@@ -90,6 +89,6 @@ public class TimelineView extends ViewController {
     }
 
     public void userProfilClicked(Event event) {
-        System.out.println("profiiiiiiiiiiiiiiiiiiiiiiiil");
+        getAppController().createWindow("Profil", "ProfilView.fxml");
     }
 }

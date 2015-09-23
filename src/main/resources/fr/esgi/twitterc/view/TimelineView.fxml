@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
@@ -20,7 +21,7 @@
             <Glow level="0.1" />
          </effect>
          <font>
-            <Font name="Batang" size="13.0" />
+            <Font size="13.0" />
          </font>
       </Button>
       <ImageView fx:id="userProfil" fitHeight="120.0" fitWidth="120.0" layoutX="6.0" layoutY="167.0" onMouseClicked="#userProfilClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="20.0" />
