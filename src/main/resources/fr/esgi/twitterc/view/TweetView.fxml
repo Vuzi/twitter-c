@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import javafx.scene.web.*?>
+<?import java.lang.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="495.0" maxWidth="400.0" minHeight="495.0" minWidth="400.0" prefHeight="495.0" prefWidth="400.0" style="-fx-background-color: #96C9e6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.TweetView">
+   <children>
+      <Label fx:id="tweetosName" layoutX="14.0" layoutY="14.0" minHeight="25.0" style="-fx-font-weight: BOLD;" text="Label" textFill="#030303" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0" />
+      <Label fx:id="tweetContent" layoutX="5.0" layoutY="65.0" minHeight="100.0" text="Label" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+      <WebView fx:id="tweetWebview" layoutX="23.0" layoutY="188.0" prefHeight="300.0" prefWidth="-1.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+   </children>
+</AnchorPane>

@@ -13,11 +13,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import twitter4j.Status;
+import twitter4j.TwitterException;
 
+import javax.swing.*;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.TimerTask;
+import java.util.Vector;
+import java.util.Timer;
 
 /**
  * Created by Emerich on 22/09/2015.
@@ -29,15 +33,17 @@ public class TimelineView extends ViewController {
     public ImageView userProfil;
     public static String ID = "TIMELINE";
     public Label tagName;
+    private List<Status> timeline;
+    ArrayList<String> items = null;
+    ObservableList<String> itemsObservable ;
 
-    /**
-     * @param url
-     * @param rb
-     */
+
+   /**
+    * @param url
+    * @param rb
+    */
     public void initialize(URL url, ResourceBundle rb) {
-        List<String> items = Arrays.asList("One \n yooooo yoooo \n zlkrtjzelr", "Two", "Three");
-        ObservableList<String> itemsObservable = FXCollections.observableList(items);
-        listview.setItems(itemsObservable);
+        items = new ArrayList<String>();
     }
 
     @Override
@@ -55,9 +61,17 @@ public class TimelineView extends ViewController {
             userProfil.setImage(image);
         }
 
-
         // Set user Tag Name
         tagName.setText("@" + App.getUser().getScreenName());
+
+        updateInfo();
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                updateInfo();
+            }
+        }, 0, 60000); // Every minute
     }
 
     @Override
@@ -75,19 +89,14 @@ public class TimelineView extends ViewController {
         return null;
     }
 
-    public void change(ActionEvent actionEvent) {
-
-        //myController.setScreen(Main.PIN_SCREEN);
-    }
-
     public void mouseClicked(Event event) {
         listview.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getButton().name().equals("PRIMARY")) {
                     if (mouseEvent.getClickCount() == 2) {
-                        System.out.printf(listview.getSelectionModel().getSelectedItem().toString());
-                        App.showTweet("646671381321486336");
+                        App.setTweetNumber(String.valueOf(timeline.get(listview.getSelectionModel().getSelectedIndex()).getId()));
+                        getAppController().createWindow("Twwet", "TweetView.fxml");
                     }
                 }
             }
@@ -102,5 +111,30 @@ public class TimelineView extends ViewController {
 
     public void userProfilClicked(Event event) {
         getAppController().createWindow("Profil", "ProfilView.fxml");
+    }
+
+    private void updateInfo() {
+        try {
+            timeline = null;
+            timeline = App.TWITTER.getHomeTimeline();
+
+            for (twitter4j.Status status3 : timeline) {
+                items.add(statusMAker(status3));
+            }
+
+            itemsObservable = FXCollections.observableList(items);
+
+            listview.setItems(itemsObservable);
+        } catch (TwitterException e) {
+            // TODO error handling
+            e.printStackTrace();
+        }
+    }
+
+    private String statusMAker( Status status){
+        String result  =  "\nDate : " + status.getCreatedAt().toString() + "\n" +
+                "By   : @" + status.getUser().getScreenName() + " (" + status.getUser().getName() + ")" +
+                "\n" +status.getText() + "\n";
+        return result;
     }
 }

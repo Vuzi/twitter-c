@@ -15,7 +15,8 @@ public class App {
     public static ConfigurationBuilder builder = new ConfigurationBuilder();
     public static Twitter TWITTER;
     private static RequestToken requestToken;
-	
+    public static String TWEETNUMBER ;
+
     public static void loadTwitter (){
 
         // Swing UI initialization
@@ -110,7 +111,6 @@ public class App {
             alert.showAndWait();
 
             return false;
-
         }
         return true;
     }
@@ -141,5 +141,7 @@ public class App {
         }
         return result;
     }
+
+    public static void setTweetNumber( String num){TWEETNUMBER = num;}
 
 }
