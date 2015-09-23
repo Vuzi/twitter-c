@@ -12,9 +12,9 @@
    <children>
       <ImageView fx:id="coverImage" fitHeight="150.0" fitWidth="590.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
       <ImageView fx:id="profilImage" fitHeight="250.0" fitWidth="230.0" layoutX="14.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="80.0" />
-      <Label fx:id="name" layoutX="286.0" layoutY="193.0" minHeight="25.0" minWidth="300.0" AnchorPane.rightAnchor="14.0" />
-      <Label fx:id="tagName" layoutX="286.0" layoutY="232.0" minHeight="25.0" minWidth="300.0" AnchorPane.rightAnchor="14.0" />
-      <Label fx:id="createdAt" layoutX="286.0" layoutY="269.0" minHeight="25.0" minWidth="300.0" />
+      <Label fx:id="name" layoutX="286.0" layoutY="193.0" minHeight="25.0" prefHeight="25.0" prefWidth="159.0" AnchorPane.rightAnchor="155.0" />
+      <Label fx:id="tagName" layoutX="402.0" layoutY="193.0" minHeight="25.0" minWidth="150.0" style="-fx-font-weight: BOLD;" AnchorPane.rightAnchor="5.0" />
+      <Label fx:id="createdAt" layoutX="286.0" layoutY="269.0" minHeight="25.0" minWidth="300.0" text="zerz" />
       <Label fx:id="followers" layoutX="286.0" layoutY="307.0" minHeight="25.0" minWidth="300.0" />
    </children>
 </AnchorPane>
