@@ -63,13 +63,13 @@ public class TimelineView extends ViewController {
         tagName.setText("@" + App.getUser().getScreenName());
 
         updateInfo();
-    /*
+
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 updateInfo();
             }
-        }, 0, 120000); // Every 2 */
+        }, 0, 120000); // Every 2
     }
 
     @Override
