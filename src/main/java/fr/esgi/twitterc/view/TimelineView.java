@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -27,6 +28,7 @@ public class TimelineView extends ViewController {
     public TextField tweetLabel;
     public ImageView userProfil;
     public static String ID = "TIMELINE";
+    public Label tagName;
 
     /**
      * @param url
@@ -45,8 +47,17 @@ public class TimelineView extends ViewController {
 
     @Override
     protected void onShow() {
-        Image image = new Image(App.getUserProfilImage());
-        userProfil.setImage(image);
+        // Set user profil image
+        String imageURL = App.getUserProfilImage();
+        if(imageURL != null) {
+            imageURL =  imageURL.replace("_normal","");
+            Image image = new Image(imageURL);
+            userProfil.setImage(image);
+        }
+
+
+        // Set user Tag Name
+        tagName.setText("@" + App.getUser().getScreenName());
     }
 
     @Override

@@ -35,13 +35,19 @@ public class ProfileView extends ViewController {
 
         // Set the banner image
         if(user.getProfileBannerURL() != null){
-            Image image = new Image(user.getProfileBannerURL());
+            String imageURL = user.getProfileBannerURL();
+
+            imageURL =  imageURL.replace("_normal","");
+            Image image = new Image(imageURL);
             coverImage.setImage(image);
         }
 
         // Set profil image
         if(user.getProfileImageURL() != null) {
-            Image imagep = new Image(user.getProfileImageURL());
+            String imageURL = user.getProfileImageURL();
+
+            imageURL =  imageURL.replace("_normal","");
+            Image imagep = new Image(imageURL);
             profilImage.setImage(imagep);
         }
 
@@ -49,7 +55,7 @@ public class ProfileView extends ViewController {
         name.setText(user.getName());
 
         // Set user TAG
-        tagName.setText(user.getScreenName());
+        tagName.setText("@" + user.getScreenName());
 
         // Set followers count
         followers.setText("Followers : " + String.valueOf(user.getFollowersCount()));
