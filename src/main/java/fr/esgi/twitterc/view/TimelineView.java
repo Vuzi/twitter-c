@@ -35,7 +35,7 @@ public class TimelineView extends ViewController {
      * @param rb
      */
     public void initialize(URL url, ResourceBundle rb) {
-        List<String> items = Arrays.asList("One", "Two", "Three");
+        List<String> items = Arrays.asList("One \n yooooo yoooo \n zlkrtjzelr", "Two", "Three");
         ObservableList<String> itemsObservable = FXCollections.observableList(items);
         listview.setItems(itemsObservable);
     }
@@ -87,6 +87,7 @@ public class TimelineView extends ViewController {
                 if (mouseEvent.getButton().name().equals("PRIMARY")) {
                     if (mouseEvent.getClickCount() == 2) {
                         System.out.printf(listview.getSelectionModel().getSelectedItem().toString());
+                        App.showTweet("646671381321486336");
                     }
                 }
             }

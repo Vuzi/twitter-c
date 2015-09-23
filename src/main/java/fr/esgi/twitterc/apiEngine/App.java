@@ -1,10 +1,7 @@
 package fr.esgi.twitterc.apiEngine;
 
 import javafx.scene.control.Alert;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.User;
+import twitter4j.*;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -128,4 +125,21 @@ public class App {
         }
         return user;
     }
+
+    public static String showTweet(String tweetID){
+
+        String result = "";
+        try {
+            Status status = TWITTER.showStatus(Long.parseLong(tweetID));
+            if (status == null) { //
+                // don't know if needed - T4J docs are very bad
+            } else {
+               result =  status.getText();
+            }
+        } catch (TwitterException e) {
+            System.err.print("Failed to search tweets: " + e.getMessage());
+        }
+        return result;
+    }
+
 }
