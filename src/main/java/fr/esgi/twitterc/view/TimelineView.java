@@ -61,7 +61,7 @@ public class TimelineView extends ViewController {
 
     @Override
     protected String getID() {
-        return null;
+        return ID;
     }
 
     public void change(ActionEvent actionEvent) {

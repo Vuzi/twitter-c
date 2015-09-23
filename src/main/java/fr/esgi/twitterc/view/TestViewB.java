@@ -2,7 +2,6 @@ package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
 
 /**
  * Example panel B.

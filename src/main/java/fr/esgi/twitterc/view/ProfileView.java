@@ -12,6 +12,7 @@ import twitter4j.User;
  * Created by Emerich on 23/09/2015.
  */
 public class ProfileView extends ViewController {
+
     public WebView webview;
     public ImageView coverImage;
     public ImageView profilImage;
@@ -19,6 +20,8 @@ public class ProfileView extends ViewController {
     public Label tagName;
     public Label createdAt;
     public Label followers;
+
+    public static final String ID = "PROFILE";
 
     @Override
     protected void onCreation() {
@@ -67,6 +70,6 @@ public class ProfileView extends ViewController {
 
     @Override
     protected String getID() {
-        return null;
+        return ID;
     }
 }

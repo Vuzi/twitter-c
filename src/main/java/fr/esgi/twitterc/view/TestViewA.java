@@ -2,7 +2,6 @@ package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
 
 /**
  * Example panel A.
@@ -46,12 +45,7 @@ public class TestViewA extends ViewController {
     }
 
     public void action(ActionEvent actionEvent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Bonjour");
-        alert.setHeaderText("Bonjour");
-        alert.setContentText("Je souhaite le bonjour");
 
-        alert.showAndWait();
     }
 
     public void back(ActionEvent actionEvent) {

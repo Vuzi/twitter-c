@@ -16,6 +16,7 @@ public class PinView extends ViewController {
 
     public TextField pinLabel;
     public static String ID = "PIN";
+
     /**
      * @param url
      * @param rb
@@ -46,14 +47,13 @@ public class PinView extends ViewController {
 
     @Override
     protected String getID() {
-        return null;
+        return ID;
     }
 
     public void change(ActionEvent actionEvent) {
         if(testPin(pinLabel.getText())) {
-            getWindowController().showOrReuseView("TimelineView.fxml", PinView.ID);
-        }
-        else{
+            getWindowController().showOrReuseView("TimelineView.fxml", TimelineView.ID);
+        } else{
             pinLabel.clear();
             App.loadTwitter();
         }

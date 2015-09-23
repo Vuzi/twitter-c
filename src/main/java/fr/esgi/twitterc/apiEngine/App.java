@@ -8,26 +8,16 @@ import twitter4j.User;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 
-import javax.swing.*;
 import java.awt.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class App {
 
-    public static ConfigurationBuilder builder = new ConfigurationBuilder();
     public static Twitter TWITTER;
     private static RequestToken requestToken;
 	
     public static void loadTwitter (){
-
-        // Swing UI initialization
-        try {
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         // Twitter connection and OAuth
         try {
@@ -64,8 +54,7 @@ public class App {
         }
     }
 
-    public  static boolean testPin(String value)
-    {
+    public  static boolean testPin(String value) {
         try {
             TWITTER.getOAuthAccessToken(requestToken, value);
         } catch (TwitterException e) {
@@ -118,8 +107,7 @@ public class App {
         return true;
     }
 
-    public static User getUser()
-    {
+    public static User getUser(){
         User user = null;
         try {
             user = TWITTER.showUser(TWITTER.getId());

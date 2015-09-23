@@ -1,5 +1,0 @@
-<root>
-  <item name='javafx.event.EventHandler'>
-    <annotation name='java.lang.annotation.Deprecated'/>
-  </item>
-</root>
