@@ -2,11 +2,7 @@ package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.apiEngine.App;
 import fr.esgi.twitterc.view.controller.ViewController;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
-import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import twitter4j.Status;
 
@@ -31,20 +27,14 @@ public class TweetView extends ViewController {
 
     @Override
     protected void onShow() {
-        System.out.println(App.TWEETNUMBER);
         Status status = App.showTweet();
         tweetosName.setText("@" + status.getUser().getScreenName());
         tweetContent.setText(status.getText());
         tweetContent.setWrapText(true);
 
         ArrayList<String> lien = pullLinks(status.getText());
-        final WebEngine webEngine = tweetWebview.getEngine();
-        Hyperlink hpl = new Hyperlink(lien.get(0));
-        hpl.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                webEngine.load(lien.get(0));
-            }
-        });
+        if(lien.size() > 0)
+            tweetWebview.getEngine().load(lien.get(lien.size()-1));
     }
 
     @Override

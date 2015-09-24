@@ -2,7 +2,6 @@ package fr.esgi.twitterc.view.controller;
 
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 

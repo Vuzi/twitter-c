@@ -2,6 +2,7 @@ package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.apiEngine.App;
 import fr.esgi.twitterc.view.controller.ViewController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +21,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.TimerTask;
 import java.util.Timer;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by Emerich on 22/09/2015.
@@ -79,7 +81,7 @@ public class TimelineView extends ViewController {
 
     @Override
     protected void onDeletion() {
-
+        System.exit(0);
     }
 
     @Override
