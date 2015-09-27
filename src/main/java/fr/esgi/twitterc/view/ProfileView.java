@@ -4,6 +4,8 @@ import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -15,6 +17,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -37,6 +40,7 @@ public class ProfileView extends ViewController {
 
     public static final String ID = "PROFILE";
     public ObservableList<Status> statusList;
+    private User user;
 
     @Override
     protected void onCreation() {
@@ -66,6 +70,7 @@ public class ProfileView extends ViewController {
      * @param user The user.
      */
     private void updateInfo(User user) {
+        this.user = user;
 
         // Set user real name
         userName.setText(user.getName());
@@ -75,23 +80,42 @@ public class ProfileView extends ViewController {
 
         // Set the banner image
         if(user.getProfileBannerURL() != null){
-            Image image = new Image(user.getProfileBannerURL().replace("web","1500x500"));
+            Task<Image> profileBannerLoader = new Task<Image>() {
+                @Override
+                protected Image call() throws Exception {
+                    return new Image(user.getProfileBannerURL().replace("web","1500x500"));
+                }
+            };
 
-            // Add background
-            BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
-            BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
-            profilePanel.setBackground(new Background(backgroundImage));
+            profileBannerLoader.setOnSucceeded(event -> {
+                Image image = profileBannerLoader.getValue();
+
+                BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
+                BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+                profilePanel.setBackground(new Background(backgroundImage));
+            });
+
+            profileBannerLoader.run();
         }
 
         // Set profile image
         if(user.getProfileImageURL() != null) {
-            Image image = new Image(user.getProfileImageURL().replace("_normal",""));
+            Task<Image> profileImageLoader = new Task<Image>() {
+                @Override
+                protected Image call() throws Exception {
+                    return new Image(user.getProfileImageURL().replace("_normal",""));
+                }
+            };
 
-            BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
-            BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-            Background background = new Background(backgroundImage);
+            profileImageLoader.setOnSucceeded(event -> {
+                Image image = profileImageLoader.getValue();
 
-            profileImage.setBackground(background);
+                BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
+                BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+                profileImage.setBackground(new Background(backgroundImage));
+            });
+
+            profileImageLoader.run();
         }
 
         // Set following count
@@ -107,21 +131,28 @@ public class ProfileView extends ViewController {
         favorites.setText(String.valueOf(user.getFavouritesCount()));
 
         // Update timeline
-        updateTimeline(user);
+        updateTimeline();
     }
 
     /**
-     * Update the timeline information of the provided user.
-     *
-     * @param user The user.
+     * Update the timeline informations.
      */
-    private void updateTimeline(User user) {
+    private void updateTimeline() {
         try {
             statusList.setAll(TwitterClient.client().getUserTimeline(user.getId()));
         } catch (TwitterException e) {
             // TODO error handling
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Action when the "new tweet" button is clicked.
+     *
+     * @param actionEvent The action event.
+     */
+    public void openNewTweetAction(ActionEvent actionEvent) {
+        getAppController().createWindow("Nouveau tweet", "NewTweetView.fxml", Collections.singletonMap("user", user));
     }
 }
 

@@ -97,6 +97,7 @@ public abstract class AppController extends Application {
 
         // Add to the list
         windows.add(controller);
+        controller.setWindow(window);
 
         return controller;
     }

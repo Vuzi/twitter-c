@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -23,6 +24,7 @@ public class WindowController extends StackPane {
     private final AppController appController;
     private final Stack<ViewController> controllers;
     private final Map<String, ViewController> controllersByID;
+    private Stage window;
 
     /**
      * Constructor for the windows controller.
@@ -198,4 +200,19 @@ public class WindowController extends StackPane {
         }
     }
 
+    /**
+     * Set the associated windows with the controller.
+     *
+     * @param window The window.
+     */
+    public void setWindow(Stage window) {
+        this.window = window;
+    }
+
+    /**
+     * Close the window.
+     */
+    public void close() {
+        this.window.close();
+    }
 }

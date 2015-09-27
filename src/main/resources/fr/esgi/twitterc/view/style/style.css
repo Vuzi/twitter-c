@@ -1,12 +1,4 @@
 
-.test {
-    -fx-background-color: white;
-    -fx-border-width: 5;
-    -fx-border-color: white;
-    -fx-border-style: solid;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-}
 
 /**
  * Tweet list
@@ -22,7 +14,7 @@
 }
 
 .tweets .list-cell:selected * {
-    -fx-text-fill: inherit;
+    -fx-text-fill: black;
 }
 
 .tweets .list-cell:selected .tweet>* {
@@ -41,6 +33,15 @@
     -fx-effect: none;
 }
 
+.profileNamePanel {
+    -fx-background-color: white;
+    -fx-border-width: 5;
+    -fx-border-color: white;
+    -fx-border-style: solid;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
 .tweetContent {
     -fx-font-size: 160%;
 }
@@ -50,6 +51,23 @@
     -fx-border-width: 1 0 0 0;
     -fx-border-style: solid;
     -fx-padding: 10;
+}
+
+.tweetButton:disabled {
+    -fx-background-color: white;
+    -fx-text-fill: lightgray;
+    -fx-border-color: #cccccc;
+}
+
+.tweetButton:selected {
+    -fx-background-color: #cccccc;
+    -fx-border-color: gray;
+}
+
+.tweetButton:hover {
+    -fx-background-color: #eeeeee;
+    -fx-border-color: gray;
+    -fx-cursor: hand;
 }
 
 .tweetButton {
@@ -105,6 +123,10 @@
 #userName {
     -fx-font-size: 150%;
     -fx-font-weight: bold;
+}
+
+#userTag {
+    -fx-font-size: 150%;
 }
 
 

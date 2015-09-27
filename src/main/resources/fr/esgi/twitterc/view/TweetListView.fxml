@@ -30,10 +30,10 @@
         <!-- Buttons -->
         <HBox alignment="CENTER" prefHeight="48.0" prefWidth="601.0" spacing="10" styleClass="tweetButtonPanel"
               GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
-            <Button styleClass="tweetButton" text="Répondre"/>
-            <Button styleClass="tweetButton" text="Retweeter"/>
-            <Button styleClass="tweetButton" text="Favoris"/>
-            <Button styleClass="tweetButton" text="Voir"/>
+            <Button styleClass="tweetButton" onAction="#respondAction" text="Répondre"/>
+            <Button styleClass="tweetButton" onAction="#retweetAction" text="Retweeter"/>
+            <Button styleClass="tweetButton" onAction="#addFavoriteAction" text="Favoris"/>
+            <Button styleClass="tweetButton" onAction="#seeDetailAction" text="Voir"/>
         </HBox>
     </GridPane>
 </VBox>
