@@ -3,7 +3,6 @@ package fr.esgi.twitterc.view;
 import fr.esgi.twitterc.view.controller.ViewController;
 
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -11,6 +10,7 @@ import javafx.scene.layout.*;
 import twitter4j.User;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * New tweet view. Show an empty tweet with an editable content.
@@ -56,6 +56,9 @@ public class NewTweetView extends ViewController {
      * @param user The user.
      */
     private void updateInfo(User user) {
+        Logger.getLogger(this.getClass().getName()).info("New tweet view for current user");
+
+        // Save user
         this.user = user;
 
         // Set user real name
@@ -121,20 +124,16 @@ public class NewTweetView extends ViewController {
 
     /**
      * Action when the "send" button is selected.
-     *
-     * @param actionEvent The action event.
      */
-    public void sendAction(ActionEvent actionEvent) {
+    public void sendAction() {
         // TODO
         System.out.println("Send tweet here for " + user.getName());
     }
 
     /**
      * Action when the "cancel" button is selected.
-     *
-     * @param actionEvent The action event.
      */
-    public void cancelAction(ActionEvent actionEvent) {
+    public void cancelAction() {
         // Just close the current window
         getWindowController().close();
     }

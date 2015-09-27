@@ -1,12 +1,10 @@
 package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
-import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -18,8 +16,10 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Profile view. Show a twitter profile information, and its timeline.
@@ -71,6 +71,9 @@ public class ProfileView extends ViewController {
      * @param user The user.
      */
     private void updateInfo(User user) {
+        Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Profile view for user : {0}, {1}", user.getScreenName(), user.getName()));
+
+        // Save user
         this.user = user;
 
         // Set user real name
@@ -149,10 +152,8 @@ public class ProfileView extends ViewController {
 
     /**
      * Action when the "new tweet" button is clicked.
-     *
-     * @param actionEvent The action event.
      */
-    public void openNewTweetAction(ActionEvent actionEvent) {
+    public void openNewTweetAction() {
         getAppController().createWindow("Nouveau tweet", "NewTweetView.fxml", Collections.singletonMap("user", user));
     }
 }
@@ -174,6 +175,7 @@ class TweetListCell extends ListCell<Status> {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/esgi/twitterc/view/TweetListView.fxml"));
             fxmlLoader.load();
             controller = fxmlLoader.getController();
+            controller.setController(parentController);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

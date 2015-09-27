@@ -44,10 +44,7 @@
 
 .tweetContent {
     -fx-font-size: 160%;
-    -fx-display-caret: ;
-    display: inline;
 }
-
 
 .tweetButtonPanel {
     -fx-border-color: lightgray;

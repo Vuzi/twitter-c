@@ -2,8 +2,9 @@ package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.utils.Utils;
+import fr.esgi.twitterc.view.controller.AppController;
+import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -16,8 +17,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import twitter4j.Status;
 import twitter4j.TwitterException;
+import twitter4j.User;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.logging.Logger;
 
 /**
@@ -38,6 +41,16 @@ public class TweetListView {
     // Running values
     private Status status;
     private Image userImage;
+    private AppController appController;
+
+    /**
+     * Set the controller.
+     *
+     * @param controller The parent controller.
+     */
+    public void setController(ViewController controller) {
+        this.appController = controller.getAppController();
+    }
 
     /**
      * Return the view of the controller.
@@ -108,20 +121,39 @@ public class TweetListView {
             if(element.startsWith("@")) {
                 textElement.setText(element);
                 textElement.setFill(Color.LIGHTBLUE);
+                textElement.setOnMouseEntered(event -> textElement.setStyle("-fx-text-fill: darkblue; -fx-cursor: hand"));
+                textElement.setOnMouseExited(event  -> textElement.setStyle("-fx-text-fill: lightblue; -fx-cursor: inherit"));
+                textElement.setOnMouseClicked(event -> {
+                    try {
+                        User u = TwitterClient.client().showUser(element.substring(1));
+                        if (u != null)
+                            appController.createWindow("Profil", "ProfilView.fxml", Collections.singletonMap("user", u));
+                    } catch (TwitterException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
             // HashTags
             else if(element.startsWith("#")) {
                 textElement.setText(element);
-                textElement.setFill(Color.DARKBLUE);
+                textElement.setFill(Color.GRAY);
+                textElement.setOnMouseEntered(event -> textElement.setStyle("-fx-text-fill: lightgray; -fx-cursor: hand"));
+                textElement.setOnMouseExited(event  -> textElement.setStyle("-fx-text-fill: gray; -fx-cursor: inherit"));
+                textElement.setOnMouseClicked(event -> System.out.println("TODO > " + element));
             }
             // URLs
-            else if(element.startsWith("http://") || element.startsWith("https://")) {
-                textElement.setText(element);
-                textElement.setFill(Color.LIGHTGREEN);
-            }
-            // Regular text
             else {
-                textElement.setText(element);
+                if (element.startsWith("http://") || element.startsWith("https://")) {
+                    textElement.setText(element);
+                    textElement.setFill(Color.LIGHTGREEN);
+                    textElement.setOnMouseEntered(event -> textElement.setStyle("-fx-text-fill: darkgreen; -fx-cursor: hand"));
+                    textElement.setOnMouseExited(event  -> textElement.setStyle("-fx-text-fill: lightgreen; -fx-cursor: inherit"));
+                    textElement.setOnMouseClicked(event -> Utils.openWebPage(element));
+                }
+                // Regular text
+                else {
+                    textElement.setText(element);
+                }
             }
 
             content.getChildren().add(textElement);
@@ -130,18 +162,14 @@ public class TweetListView {
 
     /**
      * Action when the "respond" button is clicked.
-     *
-     * @param actionEvent The action event.
      */
-    public void respondAction(ActionEvent actionEvent) {
+    public void respondAction() {
     }
 
     /**
      * Action when the "retweet" button is clicked.
-     *
-     * @param actionEvent The action event.
      */
-    public void retweetAction(ActionEvent actionEvent) {
+    public void retweetAction() {
 
         if(status == null)
             return;
@@ -184,18 +212,14 @@ public class TweetListView {
 
     /**
      * Action when the "favorite" button is clicked.
-     *
-     * @param actionEvent The action event.
      */
-    public void addFavoriteAction(ActionEvent actionEvent) {
+    public void addFavoriteAction() {
     }
 
     /**
      * Action when the "see" button is clicked.
-     *
-     * @param actionEvent The action event.
      */
-    public void seeDetailAction(ActionEvent actionEvent) {
+    public void seeDetailAction() {
 
     }
 }
