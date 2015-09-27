@@ -1,16 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
+<?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="background"  maxHeight="350.0" maxWidth="600.0" minHeight="350.0" minWidth="600.0" prefHeight="350.0" prefWidth="600.0"
-           xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.ProfileView">
+<AnchorPane fx:id="profilePanel" prefHeight="785.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.ProfileView">
+   <stylesheets>
+      <URL value="@style/style.css" />
+   </stylesheets>
    <children>
-      <ImageView fx:id="profilImage" fitHeight="250.0" fitWidth="230.0" layoutX="14.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="80.0" />
-      <Label fx:id="name" layoutX="286.0" layoutY="193.0" minHeight="25.0" prefHeight="25.0" prefWidth="159.0" AnchorPane.rightAnchor="155.0" />
-      <Label fx:id="tagName" layoutX="402.0" layoutY="193.0" minHeight="25.0" minWidth="150.0" style="-fx-font-weight: BOLD;" AnchorPane.rightAnchor="5.0" />
-      <Label fx:id="createdAt" layoutX="286.0" layoutY="269.0" minHeight="25.0" minWidth="300.0" text="zerz" />
-      <Label fx:id="followers" layoutX="286.0" layoutY="307.0" minHeight="25.0" minWidth="300.0" />
+      <AnchorPane prefHeight="232.0" prefWidth="798.0" styleClass="profilePanel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="255.0">
+         <children>
+             <HBox alignment="CENTER" layoutX="280.0" layoutY="6.0">
+                 <children>
+                     <VBox alignment="CENTER" styleClass="profileInfoItem">
+                         <children>
+                             <Label styleClass="profileInfoTitle" text="Abonnements" />
+                             <Label fx:id="following" text="0" />
+                         </children>
+                     </VBox>
+                     <VBox alignment="CENTER" styleClass="profileInfoItem">
+                         <children>
+                             <Label layoutX="28.0" layoutY="1.0" styleClass="profileInfoTitle" text="Abonnés" />
+                             <Label fx:id="followers" layoutX="57.0" layoutY="30.0" text="0" />
+                         </children>
+                     </VBox>
+                     <VBox alignment="CENTER" styleClass="profileInfoItem">
+                         <children>
+                             <Label styleClass="profileInfoTitle" text="Favoris" />
+                             <Label fx:id="favorites" text="0" />
+                         </children>
+                     </VBox>
+                     <VBox alignment="CENTER" styleClass="profileInfoItem">
+                         <children>
+                             <Label styleClass="profileInfoTitle" text="Tweets" />
+                             <Label fx:id="tweets" text="0" />
+                         </children>
+                     </VBox>
+                 </children>
+             </HBox>
+             <BorderPane AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="25.0">
+                 <center>
+                     <ListView fx:id="tweetList" maxWidth="640" styleClass="tweets" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                 </center>
+             </BorderPane>
+         </children>
+      </AnchorPane>
+      <Pane fx:id="profileImage" layoutX="50.0" layoutY="125.0" prefHeight="200.0" prefWidth="200.0" styleClass="profileImage" />
+      <Pane layoutX="45.0" layoutY="120.0" prefHeight="210.0" prefWidth="210.0" styleClass="profileImageBorder" />
+      <Pane layoutX="270.0" layoutY="173.0" prefHeight="65.0" styleClass="test">
+           <Label fx:id="userName" layoutX="14.0" layoutY="6.0" prefHeight="27.0" styleClass="profileInfoTitle" text="Name"/>
+           <Label fx:id="userTag" layoutX="14.0" layoutY="33.0" prefHeight="27.0" styleClass="profileInfoTitle" text="Tag"/>
+      </Pane>
    </children>
 </AnchorPane>

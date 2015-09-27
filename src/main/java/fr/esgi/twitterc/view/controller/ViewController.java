@@ -4,6 +4,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 /**
@@ -74,7 +75,13 @@ public abstract class ViewController implements Initializable {
     /**
      * Abstract method called when the view is showed.
      */
-    protected abstract void onShow();
+
+    /**
+     * Abstract method called when the view is showed.
+     *
+     * @param parameters Map of parameters provided by the controller when the view is showed.
+     */
+    protected abstract void onShow(Map<String, Object> parameters);
 
     /**
      * Abstract method called when the view id hid.

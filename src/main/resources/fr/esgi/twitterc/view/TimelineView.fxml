@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="800.0" maxWidth="600.0" minHeight="800.0" minWidth="600.0" prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #96C9e6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.TimelineView">
+<AnchorPane style="-fx-background-color: #96C9e6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.TimelineView">
    <children>
-      <ListView fx:id="listview" onMouseClicked="#mouseClicked" prefHeight="695.0" prefWidth="450.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
-      <TextField fx:id="tweetLabel" layoutX="145.0" layoutY="20.0" prefHeight="30.0" prefWidth="450.0" promptText="Entrez votre Tweet" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
+      <ListView fx:id="statusList" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0" />
+      <TextField fx:id="tweetTextField" layoutX="145.0" layoutY="20.0" prefHeight="30.0" prefWidth="450.0" promptText="Entrez votre Tweet" AnchorPane.leftAnchor="145.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="20.0">
          <font>
             <Font size="13.0" />
          </font>
       </TextField>
-      <Button fx:id="twitBtn" layoutX="475.0" layoutY="62.0" mnemonicParsing="false" onAction="#sendTweet" prefHeight="25.0" prefWidth="111.0" style="-fx-border-color: black; -fx-border-radius: 5;" text="Twitter" textFill="#000b17" AnchorPane.leftAnchor="484.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0">
+      <Button fx:id="twitBtn" layoutX="475.0" layoutY="62.0" mnemonicParsing="false" onAction="#sendTweetAction" prefHeight="25.0" prefWidth="111.0" style="-fx-border-color: black; -fx-border-radius: 5;" text="Twitter" textFill="#000b17" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0">
          <effect>
             <Glow level="0.1" />
          </effect>
@@ -23,7 +22,7 @@
             <Font size="13.0" />
          </font>
       </Button>
-      <ImageView fx:id="userProfil" fitHeight="120.0" fitWidth="120.0" layoutX="6.0" layoutY="167.0" onMouseClicked="#userProfilClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="20.0" />
-      <Label fx:id="tagName" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="149.0" minHeight="25.0" minWidth="120.0" style="-fx-font-weight: BOLD;" text="zerz" textAlignment="CENTER" AnchorPane.leftAnchor="5.0" />
+      <ImageView fx:id="userImage" fitHeight="120.0" fitWidth="120.0" layoutX="6.0" layoutY="167.0" onMouseClicked="#userProfileAction" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="20.0" />
+      <Label fx:id="userLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="149.0" minHeight="25.0" minWidth="120.0" style="-fx-font-weight: BOLD;" text="zerz" textAlignment="CENTER" AnchorPane.leftAnchor="5.0" />
    </children>
 </AnchorPane>

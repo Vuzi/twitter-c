@@ -1,11 +1,14 @@
 package fr.esgi.twitterc.main;
 
+import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.client.TwitterClientException;
 import fr.esgi.twitterc.view.controller.AppController;
+import twitter4j.TwitterException;
 
 import java.util.logging.Logger;
 
 /**
- * App main controller and entry point.
+ * TwitterClient main controller and entry point.
  *
  * Created by Vuzi on 23/09/2015.
  */
@@ -17,7 +20,14 @@ public class Main extends AppController {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-        Logger.getLogger(Main.class.getName()).info("App started");
+        Logger.getLogger(Main.class.getName()).info("TwitterClient started");
+
+        // Load and try to load the access token
+        try {
+            TwitterClient.initialize().authenticate();
+        } catch (TwitterClientException e) {}
+
+        // Show the views
         Main.launch(Main.class, args);
     }
 
@@ -28,6 +38,8 @@ public class Main extends AppController {
 
     @Override
     protected String getFirstView() {
-        return "PinView.fxml";
+        if(TwitterClient.get().getCurrentUser() == null)
+            return "PinView.fxml"; // Not authenticated
+        return "TimelineView.fxml"; // Authenticated
     }
 }

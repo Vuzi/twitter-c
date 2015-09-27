@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="800.0" maxWidth="600.0" minHeight="800.0" minWidth="600.0" prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #96C9e6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.PinView">
+<AnchorPane minHeight="800.0" minWidth="600.0" prefHeight="800.0" prefWidth="600.0" style="-fx-background-color: #96C9e6;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.PinView">
    <children>
       <Pane layoutX="200.0" layoutY="117.0" prefHeight="170.0" prefWidth="260.0" style="-fx-border-radius: 10; -fx-border-width: 2; -fx-border-color: black;" AnchorPane.leftAnchor="170.0" AnchorPane.rightAnchor="170.0" AnchorPane.topAnchor="315.0">
          <effect>
@@ -19,10 +18,11 @@
                </font>
             </Label>
             <TextField fx:id="pinLabel" layoutX="30.0" layoutY="65.0" prefHeight="25.0" prefWidth="200.0" />
-            <Button layoutX="30.0" layoutY="110.0" mnemonicParsing="false" onAction="#change" prefHeight="25.0" prefWidth="200.0" text="Valider">
+            <Button layoutX="30.0" layoutY="110.0" mnemonicParsing="false" onAction="#pinAction" prefHeight="25.0" prefWidth="200.0" text="Valider">
                <font>
                   <Font size="13.0" />
-               </font></Button>
+               </font>
+            </Button>
          </children>
       </Pane>
    </children>

@@ -1,6 +1,8 @@
 package fr.esgi.twitterc.view.controller;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,6 +11,7 @@ import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -23,11 +26,11 @@ public abstract class AppController extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Logger.getLogger(this.getClass().getName()).info("Application controller started");
-        createWindow(primaryStage, getAppName(), getFirstView());
+        createWindow(primaryStage, getAppName(), getFirstView(), null);
     }
 
     /**
-     * App constructor.
+     * TwitterClient constructor.
      */
     public AppController() {
         this.windows = new ArrayList<>();
@@ -54,7 +57,17 @@ public abstract class AppController extends Application {
      * @param mainPanel The main panel name.
      */
     public WindowController createWindow(String title, String mainPanel) {
-        return createWindow(new Stage(), title, mainPanel);
+        return createWindow(new Stage(), title, mainPanel, null);
+    }
+    /**
+     * Create a window, and return its controller. The view will be initialized with the provided panel name, and shown.
+     *
+     * @param title The title of the window.
+     * @param mainPanel The main panel name.
+     * @param mainPanelParameter The main panel parameters.
+     */
+    public WindowController createWindow(String title, String mainPanel, Map<String, Object> mainPanelParameter) {
+        return createWindow(new Stage(), title, mainPanel, mainPanelParameter);
     }
 
     /**
@@ -63,25 +76,23 @@ public abstract class AppController extends Application {
      * @param window The window to use.
      * @param title The title of the window.
      * @param mainPanel The main panel name.
+     * @param mainPanelParameter The main panel parameters.
      */
-    public WindowController createWindow(Stage window, String title, String mainPanel) {
+    public WindowController createWindow(Stage window, String title, String mainPanel, Map<String, Object> mainPanelParameter) {
         // The controller, AKA the window content
-        final WindowController controller = new WindowController(this, mainPanel);
+        final WindowController controller = new WindowController(this, mainPanel, mainPanelParameter);
 
         // Add and show
-        Group root = new Group();
-        root.getChildren().add(controller);
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(controller);
         window.setScene(scene);
         window.setTitle(title);
-        window.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                // Delete the controller
-                controller.onDeletion();
-                windows.remove(controller);
-            }
+        window.setOnCloseRequest(event -> {
+            // Delete the controller
+            controller.onDeletion();
+            windows.remove(controller);
         });
+        //window.setMinHeight(600);
+        //window.setMinWidth(800);
         window.show();
 
         // Add to the list

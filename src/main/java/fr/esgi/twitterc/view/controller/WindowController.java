@@ -2,6 +2,7 @@ package fr.esgi.twitterc.view.controller;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
@@ -29,6 +30,15 @@ public class WindowController extends StackPane {
      * @param appController The application controller.
      */
     public WindowController(AppController appController, String firstView) {
+        this(appController, firstView, null);
+    }
+
+    /**
+     * Constructor for the windows controller.
+     *
+     * @param appController The application controller.
+     */
+    public WindowController(AppController appController, String firstView, Map<String, Object> firstViewParameters) {
         super();
 
         Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("New view controller created with {0} as first view", firstView));
@@ -38,7 +48,7 @@ public class WindowController extends StackPane {
         this.controllersByID = new HashMap<>();
 
         // Force the creation of the first view
-        showView(firstView);
+        showView(firstView, firstViewParameters);
     }
 
     /**
@@ -58,7 +68,7 @@ public class WindowController extends StackPane {
             return;
 
         ViewController previousView = controllers.pop();
-        transitionFromTo(previousView, controllers.peek());
+        transitionFromTo(previousView, controllers.peek(), null);
 
         // Delete if not re-usable
         if(!previousView.isReusable())
@@ -72,6 +82,17 @@ public class WindowController extends StackPane {
      * @param ID The view ID to re-use if possible.
      */
     public void showOrReuseView(String name, String ID) {
+        showOrReuseView(name, ID, null);
+    }
+
+    /**
+     * Show and reuse if possible the provided view. If no possible, the view will be created.
+     *
+     * @param name The view name.
+     * @param ID The view ID to re-use if possible.
+     * @param parameters The view argument.
+     */
+    public <T> void showOrReuseView(String name, String ID, Map<String, Object> parameters) {
         ViewController controller = controllersByID.get(ID);
 
         // If null, force creation
@@ -85,7 +106,7 @@ public class WindowController extends StackPane {
 
         ViewController previousView = controllers.peek();
         controllers.push(controller);
-        transitionFromTo(previousView, controllers.peek());
+        transitionFromTo(previousView, controller, parameters);
     }
 
     /**
@@ -94,15 +115,26 @@ public class WindowController extends StackPane {
      * @param name The view name.
      */
     public void showView(String name) {
+        showView(name, null);
+    }
+
+    /**
+     * Show and force the creation of the provided view.
+     *
+     * @param name The view name.
+     * @param parameters The view argument
+     */
+    public void showView(String name, Map<String, Object> parameters) {
         try {
             Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("View creation of {0}", name));
 
             ViewController previousView = controllers.size() > 0 ? controllers.peek() :  null;
             controllers.push(createViewController(name));
 
-            transitionFromTo(previousView, controllers.peek());
+            transitionFromTo(previousView, controllers.peek(), parameters != null ? parameters : new HashMap<>());
         } catch (IOException e) {
             // Do not add the view
+            Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Error showing view {0} : {1}", name, e.getMessage()));
             e.printStackTrace();
         }
     }
@@ -113,8 +145,9 @@ public class WindowController extends StackPane {
      *
      * @param from The old view controller. Can be null if the first panel is being displayed.
      * @param to The new view controller.
+     * @param parameters The showed view parameter.
      */
-    private void transitionFromTo(ViewController from, ViewController to) {
+    private void transitionFromTo(ViewController from, ViewController to, Map<String, Object> parameters) {
         // Remove the old view
         if(from != null) {
             getChildren().remove(0);
@@ -123,7 +156,7 @@ public class WindowController extends StackPane {
 
         // Add the new one
         getChildren().add(0, to.getView());
-        to.onShow();
+        to.onShow(parameters);
     }
 
     /**
@@ -164,4 +197,5 @@ public class WindowController extends StackPane {
             controller.onDeletion();
         }
     }
+
 }

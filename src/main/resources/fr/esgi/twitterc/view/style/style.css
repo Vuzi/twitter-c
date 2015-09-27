@@ -1,0 +1,110 @@
+
+.test {
+    -fx-background-color: white;
+    -fx-border-width: 5;
+    -fx-border-color: white;
+    -fx-border-style: solid;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/**
+ * Tweet list
+ */
+.tweets {
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+}
+
+.tweets .list-cell, .tweets .list-cell:even {
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 0);
+}
+
+.tweets .list-cell:selected * {
+    -fx-text-fill: inherit;
+}
+
+.tweets .list-cell:selected .tweet>* {
+    -fx-background-color: inherit;
+}
+
+/**
+ * Tweet elements
+ */
+.tweet {
+    -fx-padding: 10;
+    -fx-background-color: white;
+}
+
+.tweet .profileImage {
+    -fx-effect: none;
+}
+
+.tweetContent {
+    -fx-font-size: 160%;
+}
+
+.tweetButtonPanel {
+    -fx-border-color: lightgray;
+    -fx-border-width: 1 0 0 0;
+    -fx-border-style: solid;
+    -fx-padding: 10;
+}
+
+.tweetButton {
+    -fx-background-color: white;
+    -fx-border-color: lightgray;
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+}
+
+/**
+ * Panel Info elements
+ */
+
+/* Main rules */
+.profilePanel {
+    -fx-background-color: #eeeeee;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-border-color: white;
+    -fx-border-width: 60 0 0 0;
+    -fx-border-style: solid;
+}
+
+/* List of properties */
+.profilePanel .profileInfoItem {
+    -fx-border-color: lightgray;
+    -fx-border-width: 0 1 0 0;
+    -fx-border-style: solid;
+    -fx-min-width: 150;
+}
+
+.profilePanel .profileInfoItem:hover Label {
+    -fx-text-fill: lightblue;
+}
+
+.profilePanel .profileInfoItem .profileInfoTitle {
+    -fx-font-size: 150%;
+}
+
+/* Profile image */
+.profileImage {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 50, 0, 0, 0);
+}
+
+.profileImageBorder {
+    -fx-border-width: 5;
+    -fx-border-color: white;
+    -fx-border-style: solid;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/* User name */
+#userName {
+    -fx-font-size: 150%;
+    -fx-font-weight: bold;
+}
+
+

@@ -1,71 +1,78 @@
 package fr.esgi.twitterc.view;
 
+import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.client.TwitterClientException;
+import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
-import fr.esgi.twitterc.apiEngine.*;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import twitter4j.auth.RequestToken;
 
 import java.awt.*;
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
-
-import static fr.esgi.twitterc.apiEngine.App.*;
 
 public class PinView extends ViewController {
 
+    // XML values
     public TextField pinLabel;
+
+    // Internal values
     public static String ID = "PIN";
+    private RequestToken token;
 
     /**
-     * @param url
-     * @param rb
+     * Initialization of the view controller, called when created from the XML view.
+     *
+     * @param url The URL used.
+     * @param rb The resource bundle used.
      */
-    public void initialize(URL url, ResourceBundle rb) {
-        App.loadTwitter();
+    public void initialize(URL url, ResourceBundle rb) {}
+
+    @Override
+    protected void onCreation() {}
+
+    @Override
+    protected void onShow(Map<String, Object> params) {
+        try {
+            token = TwitterClient.get().requestToken();
+            Utils.openWebPage(token.getAuthorizationURL());
+        } catch (TwitterClientException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    protected void onCreation() {
-
-    }
+    protected void onHide() {}
 
     @Override
-    protected void onShow() {
-
-    }
-
-    @Override
-    protected void onHide() {
-
-    }
-
-    @Override
-    protected void onDeletion() {
-
-    }
+    protected void onDeletion() {}
 
     @Override
     protected String getID() {
         return ID;
     }
 
-    public void change(ActionEvent actionEvent) {
-        if(testPin(pinLabel.getText())) {
-            getWindowController().showOrReuseView("TimelineView.fxml", TimelineView.ID);
-        } else{
-            pinLabel.clear();
-            App.loadTwitter();
-        }
-    }
+    /**
+     * Action when the pin is validated by the user.
+     *
+     * @param actionEvent Action event.
+     */
+    public void pinAction(ActionEvent actionEvent) {
+        String pin = pinLabel.getText().trim();
 
-    public static void openWebpage(URI uri) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+        if(!pin.isEmpty()) {
             try {
-                desktop.browse(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
+                TwitterClient.get().authenticate(token, pin);
+                getWindowController().showView("TimelineView.fxml");
+            } catch (TwitterClientException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("The provided pin seems wrong");
+                alert.setContentText("Twitter didn't give us access to our account with the pin you have provided. Are you sure to have copy and paste the right value?");
             }
         }
     }
