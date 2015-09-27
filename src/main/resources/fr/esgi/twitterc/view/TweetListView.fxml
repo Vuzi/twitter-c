@@ -1,39 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <!-- Tweet list view -->
-<VBox fx:id="tweetPanel" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="fr.esgi.twitterc.view.TweetListView">
-    <!-- Tweet -->
-    <GridPane maxWidth="600.0" prefWidth="600.0" styleClass="tweet">
-        <stylesheets>
-            <URL value="@style/style.css"/>
-        </stylesheets>
-        <!-- Profile image of the poster -->
-        <Pane minHeight="90.0" minWidth="90.0" prefHeight="90.0" prefWidth="90.0" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="2">
-            <Pane fx:id="profileImage" layoutX="20.0" layoutY="20.0" prefHeight="50.0" prefWidth="50.0" styleClass="profileImage"/>
-            <Pane layoutX="15.0" layoutY="15.0" prefHeight="60.0" prefWidth="60.0" styleClass="profileImageBorder"/>
-        </Pane>
-        <!-- Name, Login and date -->
-        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <Label fx:id="userName" text="name"/>
-            <Label fx:id="userTag" text="tag"/>
-            <Label fx:id="date" text="date"/>
-        </HBox>
-        <!-- Content -->
-        <HBox alignment="TOP_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <Label fx:id="content" styleClass="tweetContent" text="content" wrapText="true"/>
-        </HBox>
-        <!-- Buttons -->
-        <HBox alignment="CENTER" prefHeight="48.0" prefWidth="601.0" spacing="10" styleClass="tweetButtonPanel"
-              GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
-            <Button styleClass="tweetButton" onAction="#respondAction" text="Répondre"/>
-            <Button styleClass="tweetButton" onAction="#retweetAction" text="Retweeter"/>
-            <Button styleClass="tweetButton" onAction="#addFavoriteAction" text="Favoris"/>
-            <Button styleClass="tweetButton" onAction="#seeDetailAction" text="Voir"/>
-        </HBox>
-    </GridPane>
+
+<?import javafx.scene.text.TextFlow?>
+<VBox fx:id="tweetPanel" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.TweetListView">
+   <children>
+       <!-- Tweet -->
+       <GridPane maxWidth="600.0" prefWidth="600.0" styleClass="tweet">
+           <stylesheets>
+               <URL value="@style/style.css" />
+           </stylesheets>
+          <children>
+              <!-- Profile image of the poster -->
+              <Pane minHeight="90.0" minWidth="90.0" prefHeight="90.0" prefWidth="90.0" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="2">
+                 <children>
+                     <Pane fx:id="profileImage" layoutX="20.0" layoutY="20.0" prefHeight="50.0" prefWidth="50.0" styleClass="profileImage" />
+                     <Pane layoutX="15.0" layoutY="15.0" prefHeight="60.0" prefWidth="60.0" styleClass="profileImageBorder" />
+                 </children>
+              </Pane>
+              <!-- Name, Login and date -->
+              <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                 <children>
+                     <Label fx:id="userName" text="name" />
+                     <Label fx:id="userTag" text="tag" />
+                     <Label fx:id="date" text="date" />
+                 </children>
+              </HBox>
+              <!-- Content -->
+              <HBox alignment="TOP_LEFT" prefWidth="493.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                 <children>
+                     <TextFlow fx:id="content" prefHeight="50.0" prefWidth="493.0" styleClass="tweetContent" />
+                 </children>
+              </HBox>
+              <!-- Buttons -->
+              <HBox alignment="CENTER" prefHeight="48.0" prefWidth="601.0" spacing="10" styleClass="tweetButtonPanel" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                 <children>
+                     <Button onAction="#respondAction" styleClass="tweetButton" text="Répondre" />
+                     <Button onAction="#retweetAction" styleClass="tweetButton" text="Retweeter" />
+                     <Button onAction="#addFavoriteAction" styleClass="tweetButton" text="Favoris" />
+                     <Button onAction="#seeDetailAction" styleClass="tweetButton" text="Voir" />
+                 </children>
+              </HBox>
+          </children>
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+       </GridPane>
+   </children>
 </VBox>

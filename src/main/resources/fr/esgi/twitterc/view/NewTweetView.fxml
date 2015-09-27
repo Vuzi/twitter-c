@@ -32,7 +32,7 @@
               <!-- Content -->
               <VBox alignment="TOP_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                   <TextArea fx:id="tweetValue" prefHeight="63.0" prefWidth="490.0" wrapText="true" />
+                   <TextArea fx:id="tweetValue" prefHeight="63.0" prefWidth="490.0"  wrapText="true" />
                    <Label fx:id="remainingCharacters" text="140 caractères restant" />
                </children>
               </VBox>

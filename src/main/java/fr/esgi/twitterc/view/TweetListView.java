@@ -1,6 +1,7 @@
 package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.utils.Utils;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -10,6 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
@@ -28,7 +32,7 @@ public class TweetListView {
     public Label userName;
     public Label userTag;
     public Label date;
-    public Label content;
+    public TextFlow content;
     public Pane tweetPanel;
 
     // Running values
@@ -62,10 +66,11 @@ public class TweetListView {
         date.setText(status.getCreatedAt().toString());
 
         // Set content
+        content.getChildren().clear();
         if(status.isRetweet()) {
-            content.setText(status.getRetweetedStatus().getText());
+            updateContent(status.getRetweetedStatus().getText());
         } else {
-            content.setText(status.getText());
+            updateContent(status.getText());
         }
 
         // Set user image
@@ -89,6 +94,37 @@ public class TweetListView {
             });
 
             imageLoading.run();
+        }
+    }
+
+    private void updateContent(String text) {
+        for(String element : Utils.parseTweet(text)) {
+            if(element.isEmpty())
+                continue;
+
+            Text textElement = new Text();
+
+            // User tag
+            if(element.startsWith("@")) {
+                textElement.setText(element);
+                textElement.setFill(Color.LIGHTBLUE);
+            }
+            // HashTags
+            else if(element.startsWith("#")) {
+                textElement.setText(element);
+                textElement.setFill(Color.DARKBLUE);
+            }
+            // URLs
+            else if(element.startsWith("http://") || element.startsWith("https://")) {
+                textElement.setText(element);
+                textElement.setFill(Color.LIGHTGREEN);
+            }
+            // Regular text
+            else {
+                textElement.setText(element);
+            }
+
+            content.getChildren().add(textElement);
         }
     }
 

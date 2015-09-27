@@ -1,10 +1,14 @@
 package fr.esgi.twitterc.utils;
 
+import com.twitter.Extractor;
+
 import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.*;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -61,6 +65,42 @@ public class Utils {
         } else {
             Logger.getLogger(Utils.class.getName()).info("Desktop or browsing operation is not supported");
         }
+    }
+
+    /**
+     * Parse the provided tweet, and return a list of all the elements contained.
+     *
+     * @param tweet The tweet to parse.
+     * @return The tweet parsed.
+     */
+    public static List<String> parseTweet(String tweet) {
+        if(tweet == null)
+            tweet = "";
+
+        List<String> tweetParsed = new ArrayList<>();
+        Extractor extractor = new Extractor();
+        int index = 0;
+
+        // Elements (ordered by position in the tweet)
+        List<Extractor.Entity> entities = new ArrayList<>();
+        entities.addAll(extractor.extractURLsWithIndices(tweet));
+        entities.addAll(extractor.extractHashtagsWithIndices(tweet));
+        entities.addAll(extractor.extractMentionedScreennamesWithIndices(tweet));
+
+        Collections.sort(entities, (e1, e2) -> e1.getStart() - e2.getStart());
+
+        // Cut the tweet
+        for(Extractor.Entity entity : entities) {
+            tweetParsed.add(tweet.substring(index, entity.getStart()));
+            tweetParsed.add(tweet.substring(entity.getStart(), entity.getEnd()));
+            index = entity.getEnd();
+        }
+
+        // Last part
+        if(index < tweet.length())
+            tweetParsed.add(tweet.substring(index));
+
+        return tweetParsed;
     }
 
 }

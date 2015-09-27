@@ -2,11 +2,8 @@ package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.view.controller.ViewController;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
