@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.logging.Logger;
 
 /**
- * Controller of a tweet contained in tweet list view.
+ * Controller of a tweet contained in a tweet list view.
  *
  * Created by Vuzi on 27/09/2015.
  */

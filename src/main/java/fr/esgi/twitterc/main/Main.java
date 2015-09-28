@@ -40,6 +40,6 @@ public class Main extends AppController {
     protected String getFirstView() {
         if(TwitterClient.get().getCurrentUser() == null)
             return "PinView.fxml"; // Not authenticated
-        return "TimelineView.fxml"; // Authenticated
+        return "ProfilView.fxml"; // Authenticated
     }
 }

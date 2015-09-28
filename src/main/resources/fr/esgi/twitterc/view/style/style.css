@@ -21,6 +21,11 @@
     -fx-background-color: inherit;
 }
 
+.selectedTab {
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: cornflowerblue;
+}
+
 /**
  * Tweet elements
  */

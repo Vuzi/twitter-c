@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import twitter4j.auth.RequestToken;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -62,7 +63,7 @@ public class PinView extends ViewController {
         if(!pin.isEmpty()) {
             try {
                 TwitterClient.get().authenticate(token, pin);
-                getWindowController().showView("TimelineView.fxml");
+                getWindowController().showView("ProfilView.fxml", Collections.singletonMap("user", TwitterClient.get().getCurrentUser()));
             } catch (TwitterClientException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error");
