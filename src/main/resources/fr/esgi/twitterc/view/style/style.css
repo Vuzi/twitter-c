@@ -3,22 +3,24 @@
 /**
  * Tweet list
  */
-.tweets {
+.tweetsContainer {
     -fx-border-width: 0;
     -fx-background-color: transparent;
 }
 
-.tweets .list-cell, .tweets .list-cell:even {
+.tweetsContainer > .viewport {
+    -fx-background-color: transparent;
+}
+
+.tweets {
+    -fx-padding: 10;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+}
+
+.tweets>* {
     -fx-background-color: transparent;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 0);
-}
-
-.tweets .list-cell:selected * {
-    -fx-text-fill: black;
-}
-
-.tweets .list-cell:selected .tweet>* {
-    -fx-background-color: inherit;
 }
 
 .selectedTab {

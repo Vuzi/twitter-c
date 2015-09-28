@@ -32,10 +32,9 @@
         <BorderPane fx:id="listContainer" prefHeight="365.0" prefWidth="879.0" AnchorPane.bottomAnchor="20.0"
                     AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="35.0">
             <center>
-                <ListView fx:id="userListView" maxWidth="640" styleClass="tweets" AnchorPane.bottomAnchor="0.0"
-                          AnchorPane.topAnchor="0.0"/>
-                <ListView fx:id="tweetListView" maxWidth="640" styleClass="tweets" AnchorPane.bottomAnchor="0.0"
-                          AnchorPane.topAnchor="0.0"/>
+                <ScrollPane styleClass="tweetsContainer" maxWidth="640" minWidth="640">
+                    <VBox fx:id="tweetListView" maxWidth="640" styleClass="tweets" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                </ScrollPane>
             </center>
             <left>
                 <VBox layoutY="50.0" prefHeight="358.0" prefWidth="165.0" spacing="10" BorderPane.alignment="CENTER">

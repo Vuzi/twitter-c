@@ -24,9 +24,17 @@
         <processorPath useClasspath="true" />
         <module name="twitterc" />
       </profile>
+      <profile default="false" name="Annotation profile for TwitterC" enabled="true">
+        <sourceOutputDir name="target\generated-sources\annotations" />
+        <sourceTestOutputDir name="target\generated-test-sources\test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="TwitterC" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="twitterc" target="1.8" />
+      <module name="TwitterC" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
