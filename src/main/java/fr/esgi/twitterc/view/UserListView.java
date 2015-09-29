@@ -1,5 +1,6 @@
 package fr.esgi.twitterc.view;
 
+import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.AppController;
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.concurrent.Task;
@@ -68,23 +69,12 @@ public class UserListView {
         userImage = null;
 
         if(user.getProfileImageURL() != null) {
-
-            Task<Image> imageLoading = new Task<Image>() {
-                @Override
-                protected Image call() throws Exception {
-                    return new Image(user.getProfileImageURL());
-                }
-            };
-
-            imageLoading.setOnSucceeded(event -> {
-                userImage = imageLoading.getValue();
-
+            Utils.asyncTask(() -> new Image(user.getProfileImageURL()), image -> {
+                userImage = image;
                 BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
                 BackgroundImage backgroundImage = new BackgroundImage(userImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
                 profileImage.setBackground(new Background(backgroundImage));
             });
-
-            imageLoading.run();
         }
 
         // Set tweet number

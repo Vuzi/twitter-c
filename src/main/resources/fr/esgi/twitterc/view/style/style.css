@@ -1,4 +1,8 @@
 
+/* Font awesome icon */
+@font-face {
+    src: url(../font/fontawesome-webfont.ttf);
+}
 
 /**
  * Tweet list
@@ -32,7 +36,6 @@
  * Tweet elements
  */
 .tweet {
-    -fx-padding: 10;
     -fx-background-color: white;
 }
 
@@ -53,8 +56,21 @@
     -fx-font-size: 160%;
 }
 
+.tweetRetweetPanel {
+    -fx-background-color: #f9f9f9;
+    -fx-border-color: #eeeeee;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-style: solid;
+    -fx-padding: 10;
+}
+
+
+.tweetRetweetPanel Label {
+    -fx-text-fill: #a5a5a5;
+}
+
 .tweetButtonPanel {
-    -fx-border-color: lightgray;
+    -fx-border-color: #eeeeee;
     -fx-border-width: 1 0 0 0;
     -fx-border-style: solid;
     -fx-padding: 10;
@@ -136,4 +152,7 @@
     -fx-font-size: 150%;
 }
 
-
+/* Generic elements */
+.clickable:hover {
+    -fx-cursor: hand;
+}

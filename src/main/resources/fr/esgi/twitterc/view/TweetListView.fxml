@@ -6,33 +6,38 @@
 <?import javafx.scene.layout.*?>
 
 <!-- Tweet list view -->
+<?import fr.esgi.twitterc.view.component.Icon?>
 <VBox fx:id="tweetPanel" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.TweetListView">
     <!-- Tweet -->
     <GridPane maxWidth="600.0" prefWidth="600.0" styleClass="tweet">
         <stylesheets>
             <URL value="@style/style.css"/>
         </stylesheets>
+        <!-- Re-tweet panel -->
+        <HBox fx:id="retweetedPanel" alignment="CENTER_LEFT" prefHeight="20.0" prefWidth="601.0" styleClass="tweetRetweetPanel" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
+              <Icon value="RETWEET" size="20"/> <Label text=" "/> <Label alignment="CENTER_LEFT" fx:id="retweetedBy" /> <Label text=" a retweeté"/>
+        </HBox>
         <!-- Profile image of the poster -->
-        <Pane minHeight="90.0" minWidth="90.0" prefHeight="90.0" prefWidth="90.0" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.rowSpan="2">
+        <Pane minHeight="90.0" minWidth="90.0" prefHeight="90.0" prefWidth="90.0" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.rowSpan="2">
             <Pane fx:id="profileImage" layoutX="20.0" layoutY="20.0" prefHeight="50.0" prefWidth="50.0" styleClass="profileImage"/>
             <Pane layoutX="15.0" layoutY="15.0" prefHeight="60.0" prefWidth="60.0" styleClass="profileImageBorder"/>
         </Pane>
         <!-- Name, Login and date -->
-        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <Label fx:id="userName" text="name"/>
-            <Label fx:id="userTag" text="tag"/>
+        <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <Label fx:id="userName" onMouseClicked="#showUserAction" styleClass="clickable" text="name"/>
+            <Label fx:id="userTag" onMouseClicked="#showUserAction" styleClass="clickable" text="tag"/>
             <Label fx:id="date" text="date"/>
         </HBox>
         <!-- Content -->
-        <HBox alignment="TOP_LEFT" prefWidth="493.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <TextFlow fx:id="content" prefHeight="50.0" prefWidth="493.0" styleClass="tweetContent"/>
-        </HBox>
+        <VBox alignment="TOP_LEFT" prefWidth="493.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <TextFlow fx:id="content" prefHeight="50.0" prefWidth="493.0" styleClass="tweetContent" style="-fx-padding: 0 0 15 0" />
+        </VBox>
         <!-- Buttons -->
-        <HBox alignment="CENTER" prefHeight="48.0" prefWidth="601.0" spacing="10" styleClass="tweetButtonPanel" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="2">
-            <Button onAction="#respondAction" styleClass="tweetButton" text="Répondre"/>
-            <Button onAction="#retweetAction" styleClass="tweetButton" text="Retweeter"/>
-            <Button onAction="#addFavoriteAction" styleClass="tweetButton" text="Favoris"/>
-            <Button onAction="#seeDetailAction" styleClass="tweetButton" text="Voir"/>
+        <HBox alignment="CENTER" prefHeight="48.0" prefWidth="601.0" spacing="10" styleClass="tweetButtonPanel" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="5">
+            <Button fx:id="respondButton" onAction="#respondAction" styleClass="tweetButton" text="Répondre"/>
+            <Button fx:id="retweetButton" onAction="#retweetAction" styleClass="tweetButton" text="Retweeter"/>
+            <Button fx:id="addFavoriteButton" onAction="#addFavoriteAction" styleClass="tweetButton" text="Favoris"/>
+            <Button fx:id="seeDetailButton" onAction="#seeDetailAction" styleClass="tweetButton" text="Voir"/>
         </HBox>
     </GridPane>
 </VBox>

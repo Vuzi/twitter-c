@@ -4,9 +4,10 @@ import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.AppController;
 import fr.esgi.twitterc.view.controller.ViewController;
-import javafx.concurrent.Task;
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -32,16 +33,23 @@ public class TweetListView {
 
     // XML values
     public Pane profileImage;
+    public HBox retweetedPanel;
+    public Label retweetedBy;
     public Label userName;
     public Label userTag;
     public Label date;
     public TextFlow content;
     public Pane tweetPanel;
+    public Button seeDetailButton;
+    public Button addFavoriteButton;
+    public Button retweetButton;
+    public Button respondButton;
 
     // Running values
     private Status status;
     private Image userImage;
     private AppController appController;
+    private User author;
 
     /**
      * Set the controller.
@@ -68,12 +76,21 @@ public class TweetListView {
      */
     public void update(Status status) {
         this.status = status;
+        this.author = status.isRetweet() ? status.getRetweetedStatus().getUser() : status.getUser();
+
+        // Set retweet information
+        if(status.isRetweet()) {
+            retweetedBy.setText(status.getUser().getName());
+        } else {
+            retweetedPanel.setVisible(false);
+            retweetedPanel.setManaged(false);
+        }
 
         // Set user real name
-        userName.setText(status.getUser().getName());
+        userName.setText(author.getName());
 
         // Set user TAG
-        userTag.setText("@" + status.getUser().getScreenName());
+        userTag.setText("@" + author.getScreenName());
 
         // Set date
         date.setText(status.getCreatedAt().toString());
@@ -90,23 +107,16 @@ public class TweetListView {
         userImage = null;
 
         if(status.getUser().getProfileImageURL() != null) {
-
-            Task<Image> imageLoading = new Task<Image>() {
-                @Override
-                protected Image call() throws Exception {
-                    return new Image(status.getUser().getProfileImageURL());
-                }
-            };
-
-            imageLoading.setOnSucceeded(event -> {
-                userImage = imageLoading.getValue();
-
+            Utils.asyncTask(() -> new Image(author.getProfileImageURL()), image -> {
+                userImage = image;
                 BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
                 BackgroundImage backgroundImage = new BackgroundImage(userImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
                 profileImage.setBackground(new Background(backgroundImage));
             });
+        }
 
-            imageLoading.run();
+        if(status.getUser().getId() == TwitterClient.get().getCurrentUser().getId()) {
+            retweetButton.setDisable(true);
         }
     }
 
@@ -123,15 +133,10 @@ public class TweetListView {
                 textElement.setFill(Color.LIGHTBLUE);
                 textElement.setOnMouseEntered(event -> textElement.setStyle("-fx-text-fill: darkblue; -fx-cursor: hand"));
                 textElement.setOnMouseExited(event  -> textElement.setStyle("-fx-text-fill: lightblue; -fx-cursor: inherit"));
-                textElement.setOnMouseClicked(event -> {
-                    try {
-                        User u = TwitterClient.client().showUser(element.substring(1));
-                        if (u != null)
-                            appController.createWindow("Profil", "ProfilView.fxml", Collections.singletonMap("user", u));
-                    } catch (TwitterException e) {
-                        e.printStackTrace();
-                    }
-                });
+                textElement.setOnMouseClicked(event -> Utils.asyncTask(() -> TwitterClient.client().showUser(element.substring(1)), user -> {
+                    if (user != null)
+                        appController.createWindow("Profil", "ProfilView.fxml", Collections.singletonMap("user", user));
+                }));
             }
             // HashTags
             else if(element.startsWith("#")) {
@@ -221,5 +226,12 @@ public class TweetListView {
      */
     public void seeDetailAction() {
 
+    }
+
+    /**
+     * Action when the user name is clicked.
+     */
+    public void showUserAction() {
+        appController.createWindow("Profil", "ProfilView.fxml", Collections.singletonMap("user", author));
     }
 }

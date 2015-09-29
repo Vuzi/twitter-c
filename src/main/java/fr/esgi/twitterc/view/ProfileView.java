@@ -1,28 +1,24 @@
 package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.WeakListChangeListener;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import twitter4j.ResponseList;
 import twitter4j.Status;
 import twitter4j.User;
 
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -51,6 +47,7 @@ public class ProfileView extends ViewController {
     private User user;                                     // Current user
 
     public ObservableList<Status> tweetList;               // List of tweets
+    public ObservableList<User> userList;                  // List of users
 
     // Performance test
     public ClassLoader cachingClassLoader = new MyClassLoader(FXMLLoader.getDefaultClassLoader());
@@ -62,7 +59,7 @@ public class ProfileView extends ViewController {
         tweetList = FXCollections.observableArrayList();
 
         // Map our list to the Vbox children
-        mapByValue(tweetList, tweetListView.getChildren(), status -> {
+        Utils.mapByValue(tweetList, tweetListView.getChildren(), status -> {
             try {
                 // Load XML with custom loader
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/esgi/twitterc/view/TweetListView.fxml"));
@@ -73,6 +70,30 @@ public class ProfileView extends ViewController {
                 TweetListView controller = fxmlLoader.getController();
                 controller.setController(this);
                 controller.update(status);
+                return controller.getView();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Error case
+            return null;
+        });
+
+        // Prepare the tweet list
+        userList = FXCollections.observableArrayList();
+
+        // Map our list to the Vbox children
+        Utils.mapByValue(userList, tweetListView.getChildren(), user -> {
+            try {
+                // Load XML with custom loader
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/esgi/twitterc/view/UserListView.fxml"));
+                fxmlLoader.setClassLoader(this.cachingClassLoader);
+                fxmlLoader.load();
+
+                // Get controller & update
+                UserListView controller = fxmlLoader.getController();
+                controller.setController(this);
+                controller.update(user);
                 return controller.getView();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -121,44 +142,22 @@ public class ProfileView extends ViewController {
         // Set user TAG
         userTag.setText("@" + user.getScreenName());
 
-        // Set the banner image
+        // Set the banner image (async)
         if(user.getProfileBannerURL() != null){
-            Task<Image> profileBannerLoader = new Task<Image>() {
-                @Override
-                protected Image call() throws Exception {
-                    return new Image(user.getProfileBannerURL().replace("web","1500x500"));
-                }
-            };
-
-            profileBannerLoader.setOnSucceeded(event -> {
-                Image image = profileBannerLoader.getValue();
-
+            Utils.asyncTask(() -> new Image(user.getProfileBannerURL().replace("web", "1500x500")), image -> {
                 BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
                 BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
                 profilePanel.setBackground(new Background(backgroundImage));
             });
-
-            profileBannerLoader.run();
         }
 
-        // Set profile image
+        // Set profile image (async)
         if(user.getProfileImageURL() != null) {
-            Task<Image> profileImageLoader = new Task<Image>() {
-                @Override
-                protected Image call() throws Exception {
-                    return new Image(user.getProfileImageURL().replace("_normal",""));
-                }
-            };
-
-            profileImageLoader.setOnSucceeded(event -> {
-                Image image = profileImageLoader.getValue();
-
+            Utils.asyncTask(() -> new Image(user.getProfileImageURL().replace("_normal","")), image -> {
                 BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
                 BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
                 profileImage.setBackground(new Background(backgroundImage));
             });
-
-            profileImageLoader.run();
         }
 
         // Set following count
@@ -173,7 +172,7 @@ public class ProfileView extends ViewController {
         // Set favorites count
         favorites.setText(String.valueOf(user.getFavouritesCount()));
 
-        // Update timeline
+        // Update timeline (async)
         updateTimeline();
     }
 
@@ -182,6 +181,11 @@ public class ProfileView extends ViewController {
      */
     private void updateTimeline() {
 
+        // Empty all the lists
+        tweetList.clear();
+        userList.clear();
+
+        // Update result accordingly
         switch (type) {
             case TWEETS:
                 showAllTweets();
@@ -190,10 +194,10 @@ public class ProfileView extends ViewController {
                 showAllFavorites();
                 break;
             case FOLLOWED:
-                //showAllSubscribed();
+                showAllSubscribed();
                 break;
             case FOLLOWERS:
-                //showAllSubscribers();
+                showAllSubscribers();
                 break;
         }
     }
@@ -201,78 +205,29 @@ public class ProfileView extends ViewController {
     /**
      * Show all the tweets of the current user.
      */
-    /*
     private void showAllSubscribed() {
-        userListView.setVisible(false);
-
-        Task<ResponseList<User>> tweetLoader = new Task<ResponseList<User>>() {
-            @Override
-            protected ResponseList<User> call() throws Exception {
-                return TwitterClient.client().getFriendsList(user.getId(), -1);
-            }
-        };
-
-        tweetLoader.setOnSucceeded(event -> {
-            userList.setAll(tweetLoader.getValue());
-            userListView.scrollTo(0);
-            userListView.setVisible(true);
-        });
-
-        tweetLoader.run();
-    }*/
+        Utils.asyncTask(() -> TwitterClient.client().getFriendsList(user.getId(), -1), userList::setAll);
+    }
 
     /**
      * Show all the tweets of the current user.
-     *//*
+     */
     private void showAllSubscribers() {
-        userListView.setVisible(false);
-
-        Task<ResponseList<User>> tweetLoader = new Task<ResponseList<User>>() {
-            @Override
-            protected ResponseList<User> call() throws Exception {
-                return TwitterClient.client().getFollowersList(user.getId(), -1);
-            }
-        };
-
-        tweetLoader.setOnSucceeded(event -> {
-            userList.setAll(tweetLoader.getValue());
-            userListView.scrollTo(0);
-            userListView.setVisible(true);
-        });
-
-        tweetLoader.run();
-    }*/
+        Utils.asyncTask(() -> TwitterClient.client().getFollowersList(user.getId(), -1), userList::setAll);
+    }
 
     /**
      * Show all the tweets of the current user.
      */
     private void showAllTweets() {
-        Task<ResponseList<Status>> tweetLoader = new Task<ResponseList<Status>>() {
-            @Override
-            protected ResponseList<Status> call() throws Exception {
-                return TwitterClient.client().getUserTimeline(user.getId());
-            }
-        };
-
-        tweetLoader.setOnSucceeded(event -> tweetList.setAll(tweetLoader.getValue()));
-
-        tweetLoader.run();
+        Utils.asyncTask(() -> TwitterClient.client().getUserTimeline(user.getId()), tweetList::setAll);
     }
 
     /**
      * Show all the favorites tweets of the current user.
      */
     private void showAllFavorites() {
-        Task<ResponseList<Status>> tweetLoader = new Task<ResponseList<Status>>() {
-            @Override
-            protected ResponseList<Status> call() throws Exception {
-                return TwitterClient.client().getFavorites(user.getId());
-            }
-        };
-
-        tweetLoader.setOnSucceeded(event -> tweetList.setAll(tweetLoader.getValue()));
-
-        tweetLoader.run();
+        Utils.asyncTask(() -> TwitterClient.client().getFavorites(user.getId()), tweetList::setAll);
     }
 
     /**
@@ -286,34 +241,26 @@ public class ProfileView extends ViewController {
         if(type == ProfileViewType.FOLLOWED)
             return;
 
-        /*
         following.getStyleClass().add("selectedTab");
         followers.getStyleClass().remove("selectedTab");
         favorites.getStyleClass().remove("selectedTab");
         tweets.getStyleClass().remove("selectedTab");
 
-        if(type.contentType != ProfileViewTypeContent.USER)
-            listContainer.setCenter(userListView);
-
         type = ProfileViewType.FOLLOWED;
-        updateTimeline();*/
+        updateTimeline();
     }
 
     public void showFollowersAction() {
         if(type == ProfileViewType.FOLLOWERS)
             return;
 
-        /*
         followers.getStyleClass().add("selectedTab");
         following.getStyleClass().remove("selectedTab");
         favorites.getStyleClass().remove("selectedTab");
         tweets.getStyleClass().remove("selectedTab");
 
-        if(type.contentType != ProfileViewTypeContent.USER)
-            listContainer.setCenter(userListView);
-
         type = ProfileViewType.FOLLOWERS;
-        updateTimeline();*/
+        updateTimeline();
     }
 
     public void showFavoritesAction() {
@@ -342,57 +289,6 @@ public class ProfileView extends ViewController {
         updateTimeline();
     }
 
-    public static <S, T> void mapByValue(ObservableList<S> sourceList, ObservableList<T> targetList, Function<S, T> mapper) {
-        Objects.requireNonNull(sourceList);
-        Objects.requireNonNull(targetList);
-        Objects.requireNonNull(mapper);
-
-        Map<S, T> sourceToTargetMap = new HashMap<>();
-
-        targetList.clear();
-
-        // Populate targetList by sourceList and mapper
-        for (S s : sourceList) {
-            T t = mapper.apply(s);
-            targetList.add(t);
-            sourceToTargetMap.put(s, t);
-        }
-        // Listen to changes in sourceList and update targetList accordingly
-        ListChangeListener<S> sourceListener = c -> {
-            while (c.next()) {
-                if (c.wasPermutated()) {
-                    for (int i = c.getFrom(); i < c.getTo(); i++) {
-                        int j = c.getPermutation(i);
-                        S s = sourceList.get(j);
-                        T t = sourceToTargetMap.get(s);
-                        targetList.set(i, t);
-                    }
-                } else {
-                    for (S s : c.getRemoved()) {
-                        T t = sourceToTargetMap.get(s);
-                        targetList.remove(t);
-                        sourceToTargetMap.remove(s);
-                    }
-
-                    int i = c.getFrom();
-
-                    for (S s : c.getAddedSubList()) {
-                        T t = mapper.apply(s);
-                        targetList.add(i, t);
-                        sourceToTargetMap.put(s, t);
-                        i += 1;
-                    }
-                }
-            }
-        };
-        sourceList.addListener(new WeakListChangeListener<>(sourceListener));
-        // Store the listener in targetList to prevent GC
-        // The listener should be active as long as targetList exists
-        targetList.addListener((InvalidationListener) iv -> {
-            Object[] refs = {sourceListener,};
-            Objects.requireNonNull(refs);
-        });
-    }
 }
 
 /**
@@ -402,148 +298,26 @@ enum ProfileViewType {
     /**
      * Will show all the tweets of the user.
      */
-    TWEETS(ProfileViewTypeContent.TWEET),
+    TWEETS,
 
     /**
      * Will show all the favorites tweets of the user.
      */
-    FAVORITES(ProfileViewTypeContent.TWEET),
+    FAVORITES,
 
     /**
      * Will show all the subscribers of the user.
      */
-    FOLLOWERS(ProfileViewTypeContent.USER),
+    FOLLOWERS,
 
     /**
      * Will show all the subscriptions the user had made.
      */
-    FOLLOWED(ProfileViewTypeContent.USER);
-
-    public final ProfileViewTypeContent contentType;
-
-    ProfileViewType(ProfileViewTypeContent contentType) {
-        this.contentType = contentType;
-    }
-}
-
-
-/**
- * Enumeration of all the possible type of value that can take the main list of the profile view.
- */
-enum ProfileViewTypeContent {
-    TWEET,
-    USER
-}
-
-/**
- * Timeline list cell view. This cell will display all the information of the status given. This actually
- * only use the cached view from the profile view itself, only being a proxy between the list view and
- * our map of cached values.
- */
-class UserListCell extends ListCell<User> {
-
-    // View
-    private final ProfileView parentController;
-    private final UserListView controller;
-
-    /**
-     * Timeline Tweet constructor.
-     */
-    public UserListCell(ProfileView parentController) {
-        this.parentController = parentController;
-
-        // Create the controller
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/esgi/twitterc/view/UserListView.fxml"));
-
-            // Test custom loaded
-            fxmlLoader.setClassLoader(parentController.cachingClassLoader);
-
-            fxmlLoader.load();
-            this.controller = fxmlLoader.getController();
-            this.controller.setController(parentController);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public void updateItem(User user, boolean empty) {
-        super.updateItem(user, empty);
-
-        // No text content
-        setText(null);
-
-        // Graphical components
-        if(!empty) {
-            controller.update(user);
-            setGraphic(controller.getView());
-        } else
-            setGraphic(null);
-    }
-
-}
-
-/**
- * Timeline list cell view. This cell will display all the information of the status given. This actually
- * only use the cached view from the profile view itself, only being a proxy between the list view and
- * our map of cached values.
- */
-class TweetListCell extends ListCell<Status> {
-
-    // View
-    private final ProfileView parentController;
-
-    /**
-     * Timeline Tweet constructor.
-     */
-    public TweetListCell(ProfileView parentController) {
-        this.parentController = parentController;
-    }
-
-    @Override
-    public void updateItem(Status status, boolean empty) {
-        super.updateItem(status, empty);
-
-        // No text content
-        setText(null);
-
-        // Graphical components
-     //   if(!empty) {
-            // Creating our customs view is too heavy for FX, so every created view is cached
-            // and re-used when needed. The TweetListCell class is actually only used to given the
-            // corresponding graphic according to the provided status
-       //     TweetListView controller;// = parentController.getCachedTweetCells().get(status);
-/*
-            if(controller == null) {
-                // Create the controller
-                try {
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/esgi/twitterc/view/TweetListView.fxml"));
-
-                    // Test custom loaded
-                    fxmlLoader.setClassLoader(parentController.cachingClassLoader);
-
-                    fxmlLoader.load();
-                    controller = fxmlLoader.getController();
-                    controller.setController(parentController);
-                    controller.update(status);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-                // Cache it
-                parentController.getCachedTweetCells().put(status, controller);*/
-       //     }
-
-            //setGraphic(controller.getView());
-       // } else
-         //   setGraphic(null);
-    }
-
+    FOLLOWED
 }
 
 class MyClassLoader extends ClassLoader{
-    private final Map<String, Class> classes = new HashMap<String, Class>();
+    private final Map<String, Class> classes = new HashMap<>();
     private final ClassLoader parent;
 
     public MyClassLoader(ClassLoader parent) {
@@ -561,18 +335,14 @@ class MyClassLoader extends ClassLoader{
 
     @Override
     protected Class<?> findClass( String className ) throws ClassNotFoundException {
-// System.out.print("try to load " + className);
         if (classes.containsKey(className)) {
-            Class<?> result = classes.get(className);
-            return result;
+            return classes.get(className);
         } else {
             try {
                 Class<?> result = parent.loadClass(className);
-// System.out.println(" -> success!");
                 classes.put(className, result);
                 return result;
             } catch (ClassNotFoundException ignore) {
-// System.out.println();
                 classes.put(className, null);
                 return null;
             }
