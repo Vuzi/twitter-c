@@ -3,7 +3,6 @@ package fr.esgi.twitterc.main;
 import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.client.TwitterClientException;
 import fr.esgi.twitterc.view.controller.AppController;
-import javafx.scene.text.Font;
 
 import java.util.logging.Logger;
 

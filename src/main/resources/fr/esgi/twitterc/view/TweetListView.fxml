@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
+
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<!-- Tweet list view -->
 <?import fr.esgi.twitterc.view.component.Icon?>
+
+<!-- Tweet list view -->
 <VBox fx:id="tweetPanel" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.TweetListView">
     <!-- Tweet -->
     <GridPane maxWidth="600.0" prefWidth="600.0" styleClass="tweet">

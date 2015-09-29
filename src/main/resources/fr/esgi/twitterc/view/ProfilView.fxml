@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<!-- Profile view -->
 <AnchorPane fx:id="profilePanel" prefHeight="785.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.ProfileView">
     <stylesheets>
         <URL value="@style/style.css"/>
     </stylesheets>
+    <!-- Content panel -->
     <AnchorPane prefHeight="232.0" prefWidth="798.0" styleClass="profilePanel" AnchorPane.bottomAnchor="0.0"
                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="255.0">
+        <!-- Controls panel -->
         <HBox alignment="CENTER" layoutX="280.0" layoutY="6.0">
             <VBox alignment="CENTER" styleClass="profileInfoItem" onMouseClicked="#showFollowingAction">
                 <Label styleClass="profileInfoTitle" text="Abonnements"/>
@@ -29,15 +33,19 @@
                 <Label fx:id="tweets" styleClass="selectedTab" text="0"/>
             </VBox>
         </HBox>
-        <BorderPane fx:id="listContainer" prefHeight="365.0" prefWidth="879.0" AnchorPane.bottomAnchor="20.0"
+        <!-- Tweets/Users list -->
+        <BorderPane prefHeight="365.0" prefWidth="879.0" AnchorPane.bottomAnchor="20.0"
                     AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="35.0">
+            <!-- Tweets/Users list -->
             <center>
                 <ScrollPane styleClass="tweetsContainer" maxWidth="640" minWidth="640">
                     <VBox fx:id="tweetListView" maxWidth="640" styleClass="tweets" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                 </ScrollPane>
             </center>
+            <!-- Profile information & actions -->
             <left>
                 <VBox layoutY="50.0" prefHeight="358.0" prefWidth="165.0" spacing="10" BorderPane.alignment="CENTER">
+                    <!-- Name -->
                     <FlowPane alignment="BOTTOM_CENTER">
                         <Label fx:id="userName" alignment="TOP_LEFT" prefHeight="27.0"
                                styleClass="profileInfoTitle" text="Name"/>
@@ -45,12 +53,17 @@
                         <Label fx:id="userTag" alignment="TOP_LEFT" prefHeight="27.0"
                                styleClass="profileInfoTitle" text="Tag"/>
                     </FlowPane>
+                    <!-- Button -->
                     <Button mnemonicParsing="false" onAction="#openNewTweetAction" prefWidth="200"
                             styleClass="tweetButton" text="Envoyer un tweet"/>
+                    <TextField fx:id="searchValue" prefWidth="200" />
+                    <Button mnemonicParsing="false" onAction="#filterTweetAction" prefWidth="200"
+                            styleClass="tweetButton" text="Chercher"/>
                 </VBox>
             </left>
         </BorderPane>
     </AnchorPane>
+    <!-- Profile image & border -->
     <Pane fx:id="profileImage" layoutX="50.0" layoutY="125.0" prefHeight="200.0" prefWidth="200.0"
           styleClass="profileImage"/>
     <Pane layoutX="45.0" layoutY="120.0" prefHeight="210.0" prefWidth="210.0" styleClass="profileImageBorder"/>

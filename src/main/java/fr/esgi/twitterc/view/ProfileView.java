@@ -5,11 +5,15 @@ import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import twitter4j.Query;
 import twitter4j.Status;
+import twitter4j.TwitterException;
 import twitter4j.User;
 
 import java.io.IOException;
@@ -37,10 +41,10 @@ public class ProfileView extends ViewController {
     public Label followers;         // Number of people followed
     public Label favorites;         // Number of favorites tweets
     public Label tweets;            // Number of total tweets
-
     public VBox tweetListView;      // List of views
 
     public static final String ID = "PROFILE";
+    public TextField searchValue;
 
     // Running values
     private ProfileViewType type = ProfileViewType.TWEETS; // Current type of view displayed
@@ -176,6 +180,15 @@ public class ProfileView extends ViewController {
         updateTimeline();
     }
 
+    private void filterTimeline(String filter) {
+        if(type == ProfileViewType.TWEETS) {
+            Utils.asyncTask(() -> {
+                        Query query = new Query("from:" + user.getScreenName() + " " + filter);
+                        return TwitterClient.client().search(query).getTweets();
+                    }, tweetList::setAll);
+        }
+    }
+
     /**
      * Update the timeline information, according to the actual type of list of the controller.
      */
@@ -289,6 +302,9 @@ public class ProfileView extends ViewController {
         updateTimeline();
     }
 
+    public void filterTweetAction() {
+        filterTimeline(searchValue.getText());
+    }
 }
 
 /**
