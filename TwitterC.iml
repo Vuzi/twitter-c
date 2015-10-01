@@ -10,7 +10,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-core:4.0.3" level="project" />
+    <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-core:4.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-stream:4.0.4" level="project" />
     <orderEntry type="library" name="Maven: com.twitter:twitter-text:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.12" level="project" />
     <orderEntry type="library" name="Maven: de.jensd:fontawesomefx:8.0.8" level="project" />

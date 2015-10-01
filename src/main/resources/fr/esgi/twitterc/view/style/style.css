@@ -5,6 +5,66 @@
 }
 
 /**
+ * Panel Info elements
+ */
+
+/* Main rules */
+.profilePanel {
+    -fx-background-color: #eeeeee;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-border-color: white;
+    -fx-border-width: 60 0 0 0;
+    -fx-border-style: solid;
+}
+
+/* List of properties */
+.profilePanel .profileInfoItem {
+    -fx-border-color: lightgray;
+    -fx-border-width: 0 1 0 0;
+    -fx-border-style: solid;
+    -fx-min-width: 130;
+}
+
+.profilePanel .profileInfoItem:hover Label {
+    -fx-text-fill: lightblue;
+}
+
+.profileInfoTitle {
+    -fx-font-size: 150%;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-style: solid;
+}
+
+/* Profile image */
+.profileImage {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 50, 0, 0, 0);
+}
+
+.profileImageBorder {
+    -fx-border-width: 5;
+    -fx-border-color: white;
+    -fx-border-style: solid;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/* User name */
+#userName {
+    -fx-font-size: 150%;
+    -fx-font-weight: bold;
+}
+
+#userTag {
+    -fx-font-size: 150%;
+}
+
+/* Generic elements */
+.clickable:hover {
+    -fx-cursor: hand;
+}
+
+/**
  * Tweet list
  */
 .tweetsContainer {
@@ -100,59 +160,14 @@
     -fx-border-style: solid;
 }
 
-/**
- * Panel Info elements
- */
-
-/* Main rules */
-.profilePanel {
-    -fx-background-color: #eeeeee;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
-    -fx-border-color: white;
-    -fx-border-width: 60 0 0 0;
-    -fx-border-style: solid;
+.tweetTextArea {
+    -fx-background-color: #fff, #fff;
 }
 
-/* List of properties */
-.profilePanel .profileInfoItem {
-    -fx-border-color: lightgray;
-    -fx-border-width: 0 1 0 0;
-    -fx-border-style: solid;
-    -fx-min-width: 150;
+.tweetTextArea .content {
+    -fx-background-color: #fff;
 }
 
-.profilePanel .profileInfoItem:hover Label {
-    -fx-text-fill: lightblue;
-}
-
-.profilePanel .profileInfoItem .profileInfoTitle {
-    -fx-font-size: 150%;
-}
-
-/* Profile image */
-.profileImage {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 50, 0, 0, 0);
-}
-
-.profileImageBorder {
-    -fx-border-width: 5;
-    -fx-border-color: white;
-    -fx-border-style: solid;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-}
-
-/* User name */
-#userName {
-    -fx-font-size: 150%;
-    -fx-font-weight: bold;
-}
-
-#userTag {
-    -fx-font-size: 150%;
-}
-
-/* Generic elements */
-.clickable:hover {
-    -fx-cursor: hand;
+.tweetTextArea:focused .content {
+    -fx-background-color: #fff;
 }

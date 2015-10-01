@@ -1,11 +1,13 @@
 package fr.esgi.twitterc.utils;
 
 import com.twitter.Extractor;
+import fr.esgi.twitterc.view.controller.AppController;
 import javafx.beans.InvalidationListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
 import javafx.concurrent.Task;
+import twitter4j.User;
 
 import java.awt.*;
 import java.net.MalformedURLException;
@@ -133,7 +135,8 @@ public final class Utils {
         };
 
         // Callback
-        task.setOnSucceeded(event -> callback.apply(task.getValue()));
+        if(callback != null)
+            task.setOnSucceeded(event -> callback.apply(task.getValue()));
 
         // Run on another thread
         Thread th = new Thread(task);
@@ -201,6 +204,16 @@ public final class Utils {
             Object[] refs = {sourceListener,};
             Objects.requireNonNull(refs);
         });
+    }
+
+    /**
+     * Show the profile page of the provided user.
+     *
+     * @param appController The application controller.
+     * @param user The user.
+     */
+    public static void showProfilePage(AppController appController, User user) {
+        appController.createWindow("Profil - " + user.getName(), "ProfilView.fxml", Collections.singletonMap("user", user));
     }
 
     @FunctionalInterface

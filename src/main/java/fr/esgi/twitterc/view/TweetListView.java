@@ -4,7 +4,6 @@ import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.AppController;
 import fr.esgi.twitterc.view.controller.ViewController;
-import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -21,7 +20,6 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 /**
@@ -135,7 +133,7 @@ public class TweetListView {
                 textElement.setOnMouseExited(event  -> textElement.setStyle("-fx-text-fill: lightblue; -fx-cursor: inherit"));
                 textElement.setOnMouseClicked(event -> Utils.asyncTask(() -> TwitterClient.client().showUser(element.substring(1)), user -> {
                     if (user != null)
-                        appController.createWindow("Profil", "ProfilView.fxml", Collections.singletonMap("user", user));
+                        Utils.showProfilePage(appController, user);
                 }));
             }
             // HashTags
@@ -232,6 +230,6 @@ public class TweetListView {
      * Action when the user name is clicked.
      */
     public void showUserAction() {
-        appController.createWindow("Profil", "ProfilView.fxml", Collections.singletonMap("user", author));
+        Utils.showProfilePage(appController, author);
     }
 }

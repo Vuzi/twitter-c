@@ -3,14 +3,11 @@ package fr.esgi.twitterc.view;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.AppController;
 import fr.esgi.twitterc.view.controller.ViewController;
-import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import twitter4j.User;
-
-import java.util.Collections;
 
 /**
  * Controller of an user contained in an user list view.
@@ -98,6 +95,6 @@ public class UserListView {
      * Action when the "see" button is clicked. This action will create a new user view.
      */
     public void seeDetailAction() {
-        appController.createWindow("Profil", "ProfilView.fxml", Collections.singletonMap("user", user));
+        Utils.showProfilePage(appController, user);
     }
 }

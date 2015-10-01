@@ -6,6 +6,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -42,6 +43,13 @@ public abstract class AppController extends Application {
      * @return The name of the application.
      */
     protected abstract String getAppName();
+
+    /**
+     * Return the icon of the application.
+     *
+     * @return The icon of the application.
+     */
+    protected abstract Image getAppIcon();
 
     /**
      * Return the name of the first view.
@@ -86,6 +94,7 @@ public abstract class AppController extends Application {
         Scene scene = new Scene(controller);
         window.setScene(scene);
         window.setTitle(title);
+        window.getIcons().add(getAppIcon());
         window.setOnCloseRequest(event -> {
             // Delete the controller
             controller.onDeletion();

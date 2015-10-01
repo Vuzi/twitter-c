@@ -3,26 +3,21 @@ package fr.esgi.twitterc.view;
 import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import twitter4j.Query;
-import twitter4j.Status;
-import twitter4j.TwitterException;
-import twitter4j.User;
+import twitter4j.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -37,24 +32,36 @@ public class ProfileView extends ViewController {
     public Pane profileImage;       // Profile image
     public Label userName;          // User long name
     public Label userTag;           // User tag name
+    public Label followingTitle;
+    public Label followersTitle;
+    public Label favoritesTitle;
+    public Label tweetsTitle;
+    public Label timelineTitle;
+    public VBox timelineButton;
     public Label following;         // Number of people following
     public Label followers;         // Number of people followed
     public Label favorites;         // Number of favorites tweets
     public Label tweets;            // Number of total tweets
     public VBox tweetListView;      // List of views
+    public TextField searchValue;
+    public VBox tweetListContainer;
+    public Button waitingTweets;
 
     public static final String ID = "PROFILE";
-    public TextField searchValue;
 
     // Running values
-    private ProfileViewType type = ProfileViewType.TWEETS; // Current type of view displayed
-    private User user;                                     // Current user
+    private ProfileViewType type;              // Current type of view displayed
+    private User user;                         // Current user
 
-    public ObservableList<Status> tweetList;               // List of tweets
-    public ObservableList<User> userList;                  // List of users
+    private TwitterStream twitterStream;       // Stream
+
+    private ObservableList<Status> tweetList;  // List of tweets
+    private ObservableList<User> userList;     // List of users
+    private ArrayList<Status> waitingTweetList;// List of tweets waiting
+    private Paging paging;                     // Paging
 
     // Performance test
-    public ClassLoader cachingClassLoader = new MyClassLoader(FXMLLoader.getDefaultClassLoader());
+    private ClassLoader cachingClassLoader = new MyClassLoader(FXMLLoader.getDefaultClassLoader());
 
 
     @Override
@@ -106,6 +113,16 @@ public class ProfileView extends ViewController {
             // Error case
             return null;
         });
+
+        waitingTweetList = new ArrayList<>();
+
+        // Prepare the stream
+        try {
+            twitterStream = new TwitterStreamFactory(TwitterClient.client().getConfiguration()).getInstance();
+            twitterStream.setOAuthAccessToken(TwitterClient.client().getOAuthAccessToken());
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -119,10 +136,21 @@ public class ProfileView extends ViewController {
     }
 
     @Override
-    protected void onHide() {}
+    protected void onHide() {
+        Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Hiding profile view for user : {0}, {1}", user.getScreenName(), user.getName()));
+
+        twitterStream.clearListeners();
+
+        Utils.asyncTask(() -> {
+            twitterStream.shutdown();
+            return 0;
+        }, null);
+    }
 
     @Override
-    protected void onDeletion() {}
+    protected void onDeletion() {
+        onHide();
+    }
 
     @Override
     protected String getID() {
@@ -136,6 +164,8 @@ public class ProfileView extends ViewController {
      */
     private void updateInfo(User user) {
         Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Profile view for user : {0}, {1}", user.getScreenName(), user.getName()));
+
+        type = ProfileViewType.FOLLOWERS; // Set default value
 
         // Save user
         this.user = user;
@@ -176,10 +206,43 @@ public class ProfileView extends ViewController {
         // Set favorites count
         favorites.setText(String.valueOf(user.getFavouritesCount()));
 
-        // Update timeline (async)
-        updateTimeline();
+        // Change the view if this is the authenticated user view
+        if(user.getId() == TwitterClient.get().getCurrentUser().getId()) {
+            timelineButton.setVisible(true);
+            timelineButton.setManaged(true);
+
+            // Monitor the stream
+            twitterStream.clearListeners();
+            waitingTweetList.clear();
+            updateWaitingTimeline();
+
+            UserStreamListener listener = new UserStreamAdapter() {
+                @Override
+                public void onStatus(Status status) {
+                    waitingTweetList.add(status);
+
+                    Platform.runLater(ProfileView.this::updateWaitingTimeline);
+                }
+            };
+            twitterStream.addListener(listener);
+            twitterStream.user();
+
+            // Update timeline (async)
+            showTimelineAction();
+        } else {
+            timelineButton.setVisible(false);
+            timelineButton.setManaged(false);
+
+            // Update timeline (async)
+            showTweetAction();
+        }
     }
 
+    /**
+     * Filter the timeline to perform a search.
+     *
+     * @param filter The string filter.
+     */
     private void filterTimeline(String filter) {
         if(type == ProfileViewType.TWEETS) {
             Utils.asyncTask(() -> {
@@ -190,16 +253,54 @@ public class ProfileView extends ViewController {
     }
 
     /**
+     * Select a title label in the menu.
+     *
+     * @param label The label to select.
+     */
+    private void selectMenuLabel(Label label) {
+        timelineTitle.getStyleClass().remove("selectedTab");
+        followingTitle.getStyleClass().remove("selectedTab");
+        followersTitle.getStyleClass().remove("selectedTab");
+        favoritesTitle.getStyleClass().remove("selectedTab");
+        tweetsTitle.getStyleClass().remove("selectedTab");
+
+        label.getStyleClass().add("selectedTab");
+    }
+
+    private void updateWaitingTimeline() {
+        if(waitingTweetList.isEmpty()) {
+            waitingTweets.setVisible(false);
+            waitingTweets.setManaged(false);
+        } else {
+            if(waitingTweetList.size() > 1)
+                waitingTweets.setText(waitingTweetList.size() + " nouveaux tweets reçu");
+            else
+                waitingTweets.setText(waitingTweetList.size() + " nouveau tweet reçu");
+            waitingTweets.setVisible(true);
+            waitingTweets.setManaged(true);
+        }
+    }
+
+    /**
      * Update the timeline information, according to the actual type of list of the controller.
      */
     private void updateTimeline() {
 
-        // Empty all the lists
+        // Empty all the lists & hide buttons
         tweetList.clear();
         userList.clear();
 
+        tweetListContainer.setVisible(false);
+
+        // Clear loaded data
+        waitingTweetList.clear();
+        updateWaitingTimeline();
+
         // Update result accordingly
         switch (type) {
+            case TIMELINE:
+                showTimeline();
+                break;
             case TWEETS:
                 showAllTweets();
                 break;
@@ -219,28 +320,50 @@ public class ProfileView extends ViewController {
      * Show all the tweets of the current user.
      */
     private void showAllSubscribed() {
-        Utils.asyncTask(() -> TwitterClient.client().getFriendsList(user.getId(), -1), userList::setAll);
+        Utils.asyncTask(() -> TwitterClient.client().getFriendsList(user.getId(), -1), users -> {
+            userList.setAll(users);
+            tweetListContainer.setVisible(true);
+        });
     }
 
     /**
      * Show all the tweets of the current user.
      */
     private void showAllSubscribers() {
-        Utils.asyncTask(() -> TwitterClient.client().getFollowersList(user.getId(), -1), userList::setAll);
+        Utils.asyncTask(() -> TwitterClient.client().getFollowersList(user.getId(), -1), users ->  {
+            userList.setAll(users);
+            tweetListContainer.setVisible(true);
+        });
     }
 
     /**
      * Show all the tweets of the current user.
      */
     private void showAllTweets() {
-        Utils.asyncTask(() -> TwitterClient.client().getUserTimeline(user.getId()), tweetList::setAll);
+        Utils.asyncTask(() -> TwitterClient.client().getUserTimeline(user.getId(), paging), statuses -> {
+            tweetList.setAll(statuses);
+            tweetListContainer.setVisible(true);
+        });
     }
 
     /**
      * Show all the favorites tweets of the current user.
      */
     private void showAllFavorites() {
-        Utils.asyncTask(() -> TwitterClient.client().getFavorites(user.getId()), tweetList::setAll);
+        Utils.asyncTask(() -> TwitterClient.client().getFavorites(user.getId(), paging), statuses -> {
+            tweetList.setAll(statuses);
+            tweetListContainer.setVisible(true);
+        });
+    }
+
+    /**
+     * Show the user timeline.
+     */
+    private void showTimeline() {
+        Utils.asyncTask(() -> TwitterClient.client().getHomeTimeline(paging), statuses -> {
+            tweetList.setAll(statuses);
+            tweetListContainer.setVisible(true);
+        });
     }
 
     /**
@@ -254,12 +377,14 @@ public class ProfileView extends ViewController {
         if(type == ProfileViewType.FOLLOWED)
             return;
 
-        following.getStyleClass().add("selectedTab");
-        followers.getStyleClass().remove("selectedTab");
-        favorites.getStyleClass().remove("selectedTab");
-        tweets.getStyleClass().remove("selectedTab");
+        // Update button style
+        selectMenuLabel(followingTitle);
 
+        // Change type & reset paging
         type = ProfileViewType.FOLLOWED;
+        paging = new Paging(1, 30);
+
+        // Update
         updateTimeline();
     }
 
@@ -267,12 +392,13 @@ public class ProfileView extends ViewController {
         if(type == ProfileViewType.FOLLOWERS)
             return;
 
-        followers.getStyleClass().add("selectedTab");
-        following.getStyleClass().remove("selectedTab");
-        favorites.getStyleClass().remove("selectedTab");
-        tweets.getStyleClass().remove("selectedTab");
+        // Update button style
+        selectMenuLabel(followersTitle);
 
+        // Change type & reset paging
         type = ProfileViewType.FOLLOWERS;
+        paging = new Paging(1, 30);
+
         updateTimeline();
     }
 
@@ -280,12 +406,13 @@ public class ProfileView extends ViewController {
         if(type == ProfileViewType.FAVORITES)
             return;
 
-        favorites.getStyleClass().add("selectedTab");
-        following.getStyleClass().remove("selectedTab");
-        followers.getStyleClass().remove("selectedTab");
-        tweets.getStyleClass().remove("selectedTab");
+        // Update button style
+        selectMenuLabel(favoritesTitle);
 
+        // Change type & reset paging
         type = ProfileViewType.FAVORITES;
+        paging = new Paging(1, 30);
+
         updateTimeline();
     }
 
@@ -293,17 +420,53 @@ public class ProfileView extends ViewController {
         if(type == ProfileViewType.TWEETS)
             return;
 
-        tweets.getStyleClass().add("selectedTab");
-        following.getStyleClass().remove("selectedTab");
-        followers.getStyleClass().remove("selectedTab");
-        favorites.getStyleClass().remove("selectedTab");
+        // Update button style
+        selectMenuLabel(tweetsTitle);
 
+        // Change type & reset paging
         type = ProfileViewType.TWEETS;
+        paging = new Paging(1, 30);
+
+        updateTimeline();
+    }
+
+    public void showTimelineAction() {
+        if(type == ProfileViewType.TIMELINE)
+            return;
+
+        // Update button style
+        selectMenuLabel(timelineTitle);
+
+        // Change type & reset paging
+        type = ProfileViewType.TIMELINE;
+        paging = new Paging(1, 30);
+
         updateTimeline();
     }
 
     public void filterTweetAction() {
         filterTimeline(searchValue.getText());
+    }
+
+    public void nextPageAction() {
+        int newPage = paging.getPage() + 1;
+        paging = new Paging(newPage, 30);
+        updateTimeline();
+    }
+
+    public void previousPageAction() {
+        if(paging.getPage() > 1) {
+            int newPage = paging.getPage() - 1;
+            paging = new Paging(newPage, 30);
+            updateTimeline();
+        }
+    }
+
+    public void addWaintingTweetsAction() {
+        tweetList.addAll(0, waitingTweetList);
+        waitingTweetList.clear();
+
+        updateWaitingTimeline();
     }
 }
 
@@ -326,7 +489,7 @@ enum ProfileViewType {
      */
     FOLLOWERS,
 
-    /**
+    TIMELINE, /**
      * Will show all the subscriptions the user had made.
      */
     FOLLOWED

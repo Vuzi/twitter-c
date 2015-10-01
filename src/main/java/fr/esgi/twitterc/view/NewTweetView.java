@@ -1,5 +1,7 @@
 package fr.esgi.twitterc.view;
 
+import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
 
 import javafx.concurrent.Task;
@@ -104,8 +106,6 @@ public class NewTweetView extends ViewController {
     private void update(String tweet) {
         int remaining = 140 - tweet.length();
 
-        System.out.println(remaining);
-
         // Update the remaining characters
         if(remaining >= 0) {
             if(remaining <= 1)
@@ -126,8 +126,8 @@ public class NewTweetView extends ViewController {
      * Action when the "send" button is selected.
      */
     public void sendAction() {
-        // TODO
-        System.out.println("Send tweet here for " + user.getName());
+        Utils.asyncTask(() -> TwitterClient.client().updateStatus(tweetValue.getText()),
+                status -> getWindowController().close());
     }
 
     /**

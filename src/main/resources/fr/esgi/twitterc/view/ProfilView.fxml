@@ -5,6 +5,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import fr.esgi.twitterc.view.component.Icon?>
+
 <!-- Profile view -->
 <AnchorPane fx:id="profilePanel" prefHeight="785.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.ProfileView">
@@ -17,29 +19,59 @@
         <!-- Controls panel -->
         <HBox alignment="CENTER" layoutX="280.0" layoutY="6.0">
             <VBox alignment="CENTER" styleClass="profileInfoItem" onMouseClicked="#showFollowingAction">
-                <Label styleClass="profileInfoTitle" text="Abonnements"/>
+                <Label fx:id="followingTitle" styleClass="profileInfoTitle" text="Abonnements"/>
                 <Label fx:id="following" text="0"/>
             </VBox>
             <VBox alignment="CENTER" styleClass="profileInfoItem" onMouseClicked="#showFollowersAction">
-                <Label layoutX="28.0" layoutY="1.0" styleClass="profileInfoTitle" text="Abonnés"/>
+                <Label fx:id="followersTitle" layoutX="28.0" layoutY="1.0" styleClass="profileInfoTitle" text="Abonnés"/>
                 <Label fx:id="followers" layoutX="57.0" layoutY="30.0" text="0"/>
             </VBox>
             <VBox alignment="CENTER" styleClass="profileInfoItem" onMouseClicked="#showFavoritesAction">
-                <Label styleClass="profileInfoTitle" text="Favoris"/>
+                <Label fx:id="favoritesTitle" styleClass="profileInfoTitle" text="Favoris"/>
                 <Label fx:id="favorites" text="0"/>
             </VBox>
             <VBox alignment="CENTER" styleClass="profileInfoItem" onMouseClicked="#showTweetAction">
-                <Label styleClass="profileInfoTitle" text="Tweets"/>
-                <Label fx:id="tweets" styleClass="selectedTab" text="0"/>
+                <Label fx:id="tweetsTitle" styleClass="profileInfoTitle" text="Tweets"/>
+                <Label fx:id="tweets" text="0"/>
+            </VBox>
+            <VBox alignment="CENTER" fx:id="timelineButton" styleClass="profileInfoItem" onMouseClicked="#showTimelineAction">
+                <Label fx:id="timelineTitle" styleClass="profileInfoTitle" text="Home"/>
+                <Label styleClass="selectedTab" text=""/>
             </VBox>
         </HBox>
         <!-- Tweets/Users list -->
-        <BorderPane prefHeight="365.0" prefWidth="879.0" AnchorPane.bottomAnchor="20.0"
-                    AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="35.0">
+        <BorderPane prefHeight="365.0" prefWidth="879.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="35.0">
             <!-- Tweets/Users list -->
             <center>
                 <ScrollPane styleClass="tweetsContainer" maxWidth="640" minWidth="640">
-                    <VBox fx:id="tweetListView" maxWidth="640" styleClass="tweets" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    <VBox fx:id="tweetListContainer">
+                        <HBox alignment="CENTER" >
+                            <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="waitingTweets" visible="false" managed="false" onMouseClicked="#addWaintingTweetsAction" prefWidth="350" prefHeight="32">
+                                <graphic>
+                                    <Icon value="REFRESH" size="20"/>
+                                </graphic>
+                                <text>
+                                    x nouveaux tweet(s)
+                                </text>
+                            </Button>
+                        </HBox>
+                        <VBox fx:id="tweetListView" maxWidth="640" styleClass="tweets" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                        <HBox alignment="CENTER" >
+                            <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="previousButton"
+                                    onMouseClicked="#previousPageAction" prefHeight="32">
+                                <graphic>
+                                    <Icon value="CHEVRON_LEFT" size="20"/>
+                                </graphic>
+                            </Button>
+                            <Button styleClass="tweetButton" prefHeight="32" text="Page 1" disable="true"/>
+                            <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="nextButton"
+                                    onMouseClicked="#nextPageAction" prefHeight="32">
+                                <graphic>
+                                    <Icon value="CHEVRON_RIGHT" size="20"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </VBox>
                 </ScrollPane>
             </center>
             <!-- Profile information & actions -->
@@ -47,11 +79,9 @@
                 <VBox layoutY="50.0" prefHeight="358.0" prefWidth="165.0" spacing="10" BorderPane.alignment="CENTER">
                     <!-- Name -->
                     <FlowPane alignment="BOTTOM_CENTER">
-                        <Label fx:id="userName" alignment="TOP_LEFT" prefHeight="27.0"
-                               styleClass="profileInfoTitle" text="Name"/>
+                        <Label fx:id="userName" alignment="TOP_LEFT" prefHeight="27.0" styleClass="profileInfoTitle" text="Name"/>
                         <Label text="  "/>
-                        <Label fx:id="userTag" alignment="TOP_LEFT" prefHeight="27.0"
-                               styleClass="profileInfoTitle" text="Tag"/>
+                        <Label fx:id="userTag" alignment="TOP_LEFT" prefHeight="27.0" styleClass="profileInfoTitle" text="Tag"/>
                     </FlowPane>
                     <!-- Button -->
                     <Button mnemonicParsing="false" onAction="#openNewTweetAction" prefWidth="200"
