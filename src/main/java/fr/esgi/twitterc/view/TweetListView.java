@@ -20,6 +20,7 @@ import twitter4j.TwitterException;
 import twitter4j.User;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.logging.Logger;
 
 /**
@@ -141,8 +142,9 @@ public class TweetListView {
                 textElement.setText(element);
                 textElement.setFill(Color.GRAY);
                 textElement.setOnMouseEntered(event -> textElement.setStyle("-fx-text-fill: lightgray; -fx-cursor: hand"));
-                textElement.setOnMouseExited(event  -> textElement.setStyle("-fx-text-fill: gray; -fx-cursor: inherit"));
-                textElement.setOnMouseClicked(event -> System.out.println("TODO > " + element));
+                textElement.setOnMouseExited(event -> textElement.setStyle("-fx-text-fill: gray; -fx-cursor: inherit"));
+                textElement.setOnMouseClicked(event ->
+                        appController.createWindow("Recherche", "SearchView.fxml", Collections.singletonMap("filter", element)));
             }
             // URLs
             else {
@@ -231,5 +233,12 @@ public class TweetListView {
      */
     public void showUserAction() {
         Utils.showProfilePage(appController, author);
+    }
+
+    /**
+     * Action when the retweet user name is clicked.
+     */
+    public void showRetweetUserAction() {
+        Utils.showProfilePage(appController, status.getUser());
     }
 }

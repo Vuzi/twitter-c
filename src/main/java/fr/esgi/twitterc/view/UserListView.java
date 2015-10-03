@@ -94,7 +94,7 @@ public class UserListView {
     /**
      * Action when the "see" button is clicked. This action will create a new user view.
      */
-    public void seeDetailAction() {
+    public void showUserAction() {
         Utils.showProfilePage(appController, user);
     }
 }

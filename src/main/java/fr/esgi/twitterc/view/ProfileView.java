@@ -1,6 +1,7 @@
 package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.utils.CustomClassLoader;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.application.Platform;
@@ -15,7 +16,6 @@ import javafx.scene.layout.*;
 import twitter4j.*;
 
 import java.io.IOException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Logger;
@@ -32,20 +32,20 @@ public class ProfileView extends ViewController {
     public Pane profileImage;       // Profile image
     public Label userName;          // User long name
     public Label userTag;           // User tag name
-    public Label followingTitle;
-    public Label followersTitle;
-    public Label favoritesTitle;
-    public Label tweetsTitle;
-    public Label timelineTitle;
-    public VBox timelineButton;
+    public Label followingTitle;    // Following panel title
+    public Label followersTitle;    // Followers panel title
+    public Label favoritesTitle;    // Favorites panel title
+    public Label tweetsTitle;       // Tweets panel title
+    public Label timelineTitle;     // Timeline panel title
+    public VBox timelineButton;     // List of elements (tweets or users)
     public Label following;         // Number of people following
     public Label followers;         // Number of people followed
     public Label favorites;         // Number of favorites tweets
     public Label tweets;            // Number of total tweets
     public VBox tweetListView;      // List of views
-    public TextField searchValue;
-    public VBox tweetListContainer;
-    public Button waitingTweets;
+    public TextField searchValue;   // Filtering tweet values
+    public VBox tweetListContainer; // Container for the tweet list view
+    public Button waitingTweets;    // Button when multiple tweets have been received but not displayed
 
     public static final String ID = "PROFILE";
 
@@ -61,7 +61,7 @@ public class ProfileView extends ViewController {
     private Paging paging;                     // Paging
 
     // Performance test
-    private ClassLoader cachingClassLoader = new MyClassLoader(FXMLLoader.getDefaultClassLoader());
+    private ClassLoader cachingClassLoader = new CustomClassLoader(FXMLLoader.getDefaultClassLoader());
 
 
     @Override
@@ -321,7 +321,8 @@ public class ProfileView extends ViewController {
      */
     private void showAllSubscribed() {
         Utils.asyncTask(() -> TwitterClient.client().getFriendsList(user.getId(), -1), users -> {
-            userList.setAll(users);
+            if(users != null)
+                userList.setAll(users);
             tweetListContainer.setVisible(true);
         });
     }
@@ -331,7 +332,8 @@ public class ProfileView extends ViewController {
      */
     private void showAllSubscribers() {
         Utils.asyncTask(() -> TwitterClient.client().getFollowersList(user.getId(), -1), users ->  {
-            userList.setAll(users);
+            if(users != null)
+                userList.setAll(users);
             tweetListContainer.setVisible(true);
         });
     }
@@ -341,7 +343,8 @@ public class ProfileView extends ViewController {
      */
     private void showAllTweets() {
         Utils.asyncTask(() -> TwitterClient.client().getUserTimeline(user.getId(), paging), statuses -> {
-            tweetList.setAll(statuses);
+            if(statuses != null)
+                tweetList.setAll(statuses);
             tweetListContainer.setVisible(true);
         });
     }
@@ -351,7 +354,8 @@ public class ProfileView extends ViewController {
      */
     private void showAllFavorites() {
         Utils.asyncTask(() -> TwitterClient.client().getFavorites(user.getId(), paging), statuses -> {
-            tweetList.setAll(statuses);
+            if(statuses != null)
+                tweetList.setAll(statuses);
             tweetListContainer.setVisible(true);
         });
     }
@@ -361,7 +365,8 @@ public class ProfileView extends ViewController {
      */
     private void showTimeline() {
         Utils.asyncTask(() -> TwitterClient.client().getHomeTimeline(paging), statuses -> {
-            tweetList.setAll(statuses);
+            if(statuses != null)
+                tweetList.setAll(statuses);
             tweetListContainer.setVisible(true);
         });
     }
@@ -462,11 +467,15 @@ public class ProfileView extends ViewController {
         }
     }
 
-    public void addWaintingTweetsAction() {
+    public void addWaitingTweetsAction() {
         tweetList.addAll(0, waitingTweetList);
         waitingTweetList.clear();
 
         updateWaitingTimeline();
+    }
+
+    public void searchAction() {
+        getAppController().createWindow("Recherche", "SearchView.fxml");
     }
 }
 
@@ -493,74 +502,4 @@ enum ProfileViewType {
      * Will show all the subscriptions the user had made.
      */
     FOLLOWED
-}
-
-class MyClassLoader extends ClassLoader{
-    private final Map<String, Class> classes = new HashMap<>();
-    private final ClassLoader parent;
-
-    public MyClassLoader(ClassLoader parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public Class<?> loadClass(String name) throws ClassNotFoundException {
-        Class<?> c = findClass(name);
-        if ( c == null ) {
-            throw new ClassNotFoundException( name );
-        }
-        return c;
-    }
-
-    @Override
-    protected Class<?> findClass( String className ) throws ClassNotFoundException {
-        if (classes.containsKey(className)) {
-            return classes.get(className);
-        } else {
-            try {
-                Class<?> result = parent.loadClass(className);
-                classes.put(className, result);
-                return result;
-            } catch (ClassNotFoundException ignore) {
-                classes.put(className, null);
-                return null;
-            }
-        }
-    }
-
-    // ========= delegating methods =============
-    @Override
-    public URL getResource( String name ) {
-        return parent.getResource(name);
-    }
-
-    @Override
-    public Enumeration<URL> getResources( String name ) throws IOException {
-        return parent.getResources(name);
-    }
-
-    @Override
-    public String toString() {
-        return parent.toString();
-    }
-
-    @Override
-    public void setDefaultAssertionStatus(boolean enabled) {
-        parent.setDefaultAssertionStatus(enabled);
-    }
-
-    @Override
-    public void setPackageAssertionStatus(String packageName, boolean enabled) {
-        parent.setPackageAssertionStatus(packageName, enabled);
-    }
-
-    @Override
-    public void setClassAssertionStatus(String className, boolean enabled) {
-        parent.setClassAssertionStatus(className, enabled);
-    }
-
-    @Override
-    public void clearAssertionStatus() {
-        parent.clearAssertionStatus();
-    }
 }

@@ -46,7 +46,7 @@
                 <ScrollPane styleClass="tweetsContainer" maxWidth="640" minWidth="640">
                     <VBox fx:id="tweetListContainer">
                         <HBox alignment="CENTER" >
-                            <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="waitingTweets" visible="false" managed="false" onMouseClicked="#addWaintingTweetsAction" prefWidth="350" prefHeight="32">
+                            <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="waitingTweets" visible="false" managed="false" onMouseClicked="#addWaitingTweetsAction" prefWidth="350" prefHeight="32">
                                 <graphic>
                                     <Icon value="REFRESH" size="20"/>
                                 </graphic>
@@ -88,7 +88,9 @@
                             styleClass="tweetButton" text="Envoyer un tweet"/>
                     <TextField fx:id="searchValue" prefWidth="200" />
                     <Button mnemonicParsing="false" onAction="#filterTweetAction" prefWidth="200"
-                            styleClass="tweetButton" text="Chercher"/>
+                            styleClass="tweetButton" text="Filter"/>
+                    <Button mnemonicParsing="false" onAction="#searchAction" prefWidth="200"
+                            styleClass="tweetButton" text="Lancer une recherche"/>
                 </VBox>
             </left>
         </BorderPane>

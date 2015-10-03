@@ -1,14 +1,9 @@
 package fr.esgi.twitterc.view.controller;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +22,16 @@ public abstract class AppController extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Logger.getLogger(this.getClass().getName()).info("Application controller started");
-        createWindow(primaryStage, getAppName(), getFirstView(), null);
+        onCreation();
     }
+
+    @Override
+    public void stop() {
+        Logger.getLogger(this.getClass().getName()).info("Application controller stopped");
+        onEnd();
+    }
+
+    protected abstract void onEnd();
 
     /**
      * TwitterClient constructor.
@@ -38,25 +41,16 @@ public abstract class AppController extends Application {
     }
 
     /**
-     * Return the name of the application.
+     * Return the image of the application.
      *
-     * @return The name of the application.
-     */
-    protected abstract String getAppName();
-
-    /**
-     * Return the icon of the application.
-     *
-     * @return The icon of the application.
+     * @return The image of the application.
      */
     protected abstract Image getAppIcon();
 
     /**
-     * Return the name of the first view.
-     *
-     * @return The name of the first view.
+     * Called on the creation of the application controller.
      */
-    protected abstract String getFirstView();
+    protected void onCreation() {}
 
     /**
      * Create a window, and return its controller. The view will be initialized with the provided panel name, and shown.
@@ -109,5 +103,9 @@ public abstract class AppController extends Application {
         controller.setWindow(window);
 
         return controller;
+    }
+
+    public List<WindowController> getWindows() {
+        return windows;
     }
 }

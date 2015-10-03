@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<!-- Search view -->
+<AnchorPane fx:id="searchPanel" prefHeight="785.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.SearchView">
+    <stylesheets>
+        <URL value="@style/style.css"/>
+    </stylesheets>
+    <fx:define>
+        <ToggleGroup fx:id="toggleGroup"/>
+    </fx:define>
+    <!-- Content panel -->
+    <AnchorPane prefHeight="232.0" prefWidth="798.0" styleClass="profilePanel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="115.0">
+        <!-- Title -->
+        <HBox alignment="CENTER" layoutX="60.0" layoutY="15">
+            <HBox alignment="CENTER">
+                <Label styleClass="profileInfoTitle" style="-fx-font-weight: bold" text="Recherche"/>
+            </HBox>
+        </HBox>
+        <!-- Tweets/Users list -->
+        <BorderPane prefHeight="365.0" prefWidth="879.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="35.0">
+            <!-- Profile information & actions -->
+            <left>
+                <VBox layoutY="0.0" prefHeight="358.0" prefWidth="165.0" spacing="10" BorderPane.alignment="CENTER">
+                    <!-- Search type -->
+                    <Label alignment="TOP_LEFT" prefHeight="27.0" styleClass="profileInfoTitle" text="Type"/>
+                    <FlowPane alignment="BOTTOM_LEFT">
+                        <Label alignment="TOP_LEFT" maxHeight="10.0" prefWidth="100" text="Utilisateurs"/> <RadioButton fx:id="userSearch" toggleGroup="$toggleGroup" />
+                    </FlowPane>
+                    <FlowPane alignment="BOTTOM_LEFT">
+                        <Label alignment="TOP_LEFT" maxHeight="10.0" prefWidth="100"  text="Tweets"/> <RadioButton fx:id="tweetSearch" toggleGroup="$toggleGroup" selected="true"/>
+                    </FlowPane>
+                    <!-- Options -->
+                    <Label alignment="TOP_LEFT" prefHeight="27.0" styleClass="profileInfoTitle" text="Options"/>
+                    <FlowPane alignment="BOTTOM_LEFT">
+                        <Label alignment="TOP_LEFT" maxHeight="10.0" prefWidth="100"  text="Ingore les retweets"/> <CheckBox fx:id="ignoreRetweets" selected="true"/>
+                    </FlowPane>
+                    <!-- Search filter -->
+                    <Label alignment="TOP_LEFT" prefHeight="27.0" styleClass="profileInfoTitle" text="Filtre"/>
+                    <TextField fx:id="searchValue" prefWidth="200" onAction="#searchAction" />
+                    <!-- Search button -->
+                    <Label alignment="TOP_LEFT" prefHeight="10.0" text=""/>
+                    <Button mnemonicParsing="false" onAction="#searchAction" prefWidth="200"
+                            styleClass="tweetButton" text="Rechercher"/>
+                </VBox>
+            </left>
+            <!-- Tweets/Users list -->
+            <center>
+                <ScrollPane styleClass="tweetsContainer" fx:id="tweetListContainer" maxWidth="640" minWidth="640">
+                    <VBox>
+                        <VBox fx:id="tweetListView" maxWidth="640" styleClass="tweets" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                        <HBox alignment="CENTER" >
+                            <Button mnemonicParsing="false" styleClass="tweetButton" onMouseClicked="#nextPageAction" prefHeight="32" text="Charger plus de résultats">
+                            </Button>
+                        </HBox>
+                    </VBox>
+                </ScrollPane>
+            </center>
+        </BorderPane>
+    </AnchorPane>
+</AnchorPane>

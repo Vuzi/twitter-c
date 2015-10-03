@@ -10,6 +10,7 @@ import javafx.concurrent.Task;
 import twitter4j.User;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -246,3 +247,5 @@ public final class Utils {
         R apply() throws Throwable;
     }
 }
+
+
