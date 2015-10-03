@@ -86,9 +86,12 @@
                     <!-- Button -->
                     <Button mnemonicParsing="false" onAction="#openNewTweetAction" prefWidth="200"
                             styleClass="tweetButton" text="Envoyer un tweet"/>
+                    <Button fx:id="followButton" mnemonicParsing="false" onAction="#openFollowAction" prefWidth="200"
+                            styleClass="tweetButton" text="Suivre"/>
                     <TextField fx:id="searchValue" prefWidth="200" />
                     <Button mnemonicParsing="false" onAction="#filterTweetAction" prefWidth="200"
                             styleClass="tweetButton" text="Filter"/>
+                    <Label prefWidth="200" text=" " />
                     <Button mnemonicParsing="false" onAction="#searchAction" prefWidth="200"
                             styleClass="tweetButton" text="Lancer une recherche"/>
                 </VBox>

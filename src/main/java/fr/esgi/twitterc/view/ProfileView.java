@@ -17,7 +17,9 @@ import twitter4j.*;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -46,6 +48,7 @@ public class ProfileView extends ViewController {
     public TextField searchValue;   // Filtering tweet values
     public VBox tweetListContainer; // Container for the tweet list view
     public Button waitingTweets;    // Button when multiple tweets have been received but not displayed
+    public Button followButton;     // Follow button
 
     public static final String ID = "PROFILE";
 
@@ -211,6 +214,9 @@ public class ProfileView extends ViewController {
             timelineButton.setVisible(true);
             timelineButton.setManaged(true);
 
+            followButton.setVisible(false);
+            followButton.setManaged(false);
+
             // Monitor the stream
             twitterStream.clearListeners();
             waitingTweetList.clear();
@@ -232,6 +238,12 @@ public class ProfileView extends ViewController {
         } else {
             timelineButton.setVisible(false);
             timelineButton.setManaged(false);
+
+            followButton.setVisible(true);
+            followButton.setManaged(true);
+
+            Utils.asyncTask(() -> TwitterClient.client().showFriendship(TwitterClient.get().getCurrentUser().getId(), user.getId()),
+                    relationship -> followButton.setDisable(relationship.isSourceFollowingTarget()));
 
             // Update timeline (async)
             showTweetAction();
@@ -476,6 +488,10 @@ public class ProfileView extends ViewController {
 
     public void searchAction() {
         getAppController().createWindow("Recherche", "SearchView.fxml");
+    }
+
+    public void openFollowAction() {
+        // TODO
     }
 }
 

@@ -2,25 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8ebf35b0-99c5-425d-b9fb-b32f1821167c" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/image/bg.jpg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/utils/CustomClassLoader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/SearchView.fxml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/SearchView.java" />
-      <change type="DELETED" beforePath="C:\Dropbox\GitHub\TwitterC\src\main\java\fr\esgi\twitterc\view\TimelineView.java" afterPath="" />
-      <change type="DELETED" beforePath="C:\Dropbox\GitHub\TwitterC\src\main\resources\fr\esgi\twitterc\view\TimelineView.fxml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Dropbox\GitHub\TwitterC\src\main\resources\fr\esgi\twitterc\view\TweetView.fxml" afterPath="" />
-      <change type="MOVED" beforePath="C:\Dropbox\GitHub\TwitterC\src\main\resources\fr\esgi\twitterc\view\icon\twitter.png" afterPath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/image/twitter.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/controller/AppController.java" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/controller/AppController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/main/Main.java" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/main/Main.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/ProfilView.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/ProfilView.fxml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/ProfileView.java" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/ProfileView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/TweetListView.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/TweetListView.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/TweetListView.java" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/TweetListView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/UserListView.fxml" afterPath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/UserListView.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/UserListView.java" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/UserListView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/utils/Utils.java" afterPath="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/utils/Utils.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/style/style.css" afterPath="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/style/style.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="twitterc.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -44,18 +27,35 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ProfileView.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ProfileView.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/ProfileView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="389" column="35" selection-start-line="389" selection-start-column="35" selection-end-line="389" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.79744524">
+              <caret line="247" column="38" selection-start-line="247" selection-start-column="38" selection-end-line="247" selection-end-column="38" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#14985#14986#0" expanded="true" />
-                <element signature="e#15038#15039#0" expanded="true" />
-                <element signature="e#15606#15607#0" expanded="true" />
-                <element signature="e#15685#15686#0" expanded="true" />
+                <element signature="e#5734#5735#0" expanded="true" />
+                <element signature="e#5758#5759#0" expanded="true" />
+                <element signature="e#5804#5805#0" expanded="true" />
+                <element signature="e#5829#5830#0" expanded="true" />
+                <element signature="e#15510#15511#0" expanded="true" />
+                <element signature="e#15563#15564#0" expanded="true" />
+                <element signature="e#16131#16132#0" expanded="true" />
+                <element signature="e#16210#16211#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SearchView.fxml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/SearchView.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.206897">
+              <caret line="14" column="37" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -75,11 +75,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/main/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7518248">
-              <caret line="132" column="19" selection-start-line="132" selection-start-column="19" selection-end-line="132" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="133" column="0" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ProfilView.fxml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/ProfilView.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.206897">
+              <caret line="88" column="47" selection-start-line="88" selection-start-column="47" selection-end-line="88" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -129,12 +142,10 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/NewTweetView.fxml" />
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/NewTweetView.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/ProfilView.fxml" />
         <option value="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/style/style.css" />
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/utils/Utils.java" />
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/utils/MyClassLoader.java" />
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/utils/CustomClassLoader.java" />
-        <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/ProfileView.java" />
         <option value="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/SearchView.fxml" />
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/SearchView.java" />
         <option value="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/UserListView.fxml" />
@@ -143,6 +154,8 @@
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/UserListView.java" />
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/controller/AppController.java" />
         <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/main/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/ProfilView.fxml" />
+        <option value="$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/ProfileView.java" />
       </list>
     </option>
   </component>
@@ -340,6 +353,40 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="view" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="twitterc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="TwitterC" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="twitterc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="view" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ProfileView.java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -791,12 +838,12 @@
       <workItem from="1443714180152" duration="1062000" />
       <workItem from="1443715309833" duration="15838000" />
       <workItem from="1443775663438" duration="1830000" />
-      <workItem from="1443873137326" duration="13494000" />
+      <workItem from="1443873137326" duration="14605000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="145972000" />
+    <option name="totallyTimeSpent" value="147083000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1096" extended-state="6" />
@@ -1126,17 +1173,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/ProfilView.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.2413793">
-          <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="23" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/TweetListView.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder">
         <state />
@@ -1172,17 +1208,6 @@
             <element signature="e#4344#4345#0" expanded="true" />
             <element signature="e#4369#4370#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/SearchView.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4857143">
-          <caret line="14" column="37" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1282,25 +1307,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/ProfileView.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/main/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="389" column="35" selection-start-line="389" selection-start-column="35" selection-end-line="389" selection-end-column="35" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#14985#14986#0" expanded="true" />
-            <element signature="e#15038#15039#0" expanded="true" />
-            <element signature="e#15606#15607#0" expanded="true" />
-            <element signature="e#15685#15686#0" expanded="true" />
-          </folding>
+          <caret line="133" column="0" selection-start-line="133" selection-start-column="0" selection-end-line="133" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/main/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/SearchView.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7518248">
-          <caret line="132" column="19" selection-start-line="132" selection-start-column="19" selection-end-line="132" selection-end-column="19" />
+        <state vertical-scroll-proportion="-8.206897">
+          <caret line="14" column="37" selection-start-line="14" selection-start-column="37" selection-end-line="14" selection-end-column="37" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/fr/esgi/twitterc/view/ProfilView.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.206897">
+          <caret line="88" column="47" selection-start-line="88" selection-start-column="47" selection-end-line="88" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/fr/esgi/twitterc/view/ProfileView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.79744524">
+          <caret line="247" column="38" selection-start-line="247" selection-start-column="38" selection-end-line="247" selection-end-column="38" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5734#5735#0" expanded="true" />
+            <element signature="e#5758#5759#0" expanded="true" />
+            <element signature="e#5804#5805#0" expanded="true" />
+            <element signature="e#5829#5830#0" expanded="true" />
+            <element signature="e#15510#15511#0" expanded="true" />
+            <element signature="e#15563#15564#0" expanded="true" />
+            <element signature="e#16131#16132#0" expanded="true" />
+            <element signature="e#16210#16211#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
