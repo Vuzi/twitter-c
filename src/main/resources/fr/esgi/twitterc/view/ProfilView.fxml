@@ -63,7 +63,7 @@
                                     <Icon value="CHEVRON_LEFT" size="20"/>
                                 </graphic>
                             </Button>
-                            <Button styleClass="tweetButton" prefHeight="32" text="Page 1" disable="true"/>
+                            <Button styleClass="tweetButton" prefHeight="32" text="     " disable="true"/>
                             <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="nextButton"
                                     onMouseClicked="#nextPageAction" prefHeight="32">
                                 <graphic>

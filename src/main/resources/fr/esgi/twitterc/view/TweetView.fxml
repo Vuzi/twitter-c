@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+
+<?import javafx.scene.layout.*?>
+
+<!-- New tweet view -->
+
+<?import javafx.scene.control.ScrollPane?>
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="fr.esgi.twitterc.view.TweetView">
+    <stylesheets>
+        <URL value="@style/style.css"/>
+    </stylesheets>
+    <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" alignment="CENTER">
+        <!-- Tweet -->
+        <VBox fx:id="tweet" styleClass="tweets" alignment="CENTER" maxWidth="640" minWidth="640" />
+        <!-- Replies -->
+        <ScrollPane styleClass="tweetsContainer" maxWidth="640" minWidth="640">
+            <VBox fx:id="replies" maxWidth="640" styleClass="tweets" spacing="10"/>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>

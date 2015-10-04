@@ -15,13 +15,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import twitter4j.Status;
-import twitter4j.TwitterException;
-import twitter4j.User;
+import twitter4j.*;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Controller of a tweet contained in a tweet list view.
@@ -43,12 +44,17 @@ public class TweetListView {
     public Button addFavoriteButton;
     public Button retweetButton;
     public Button respondButton;
+    public HBox responseAtPanel;
+    public Label responseTo;
+    public HBox hasResponsePanel;
+    public Label responses;
 
     // Running values
     private Status status;
     private Image userImage;
     private AppController appController;
     private User author;
+    private Status responseToValue;
 
     /**
      * Set the controller.
@@ -79,10 +85,26 @@ public class TweetListView {
 
         // Set retweet information
         if(status.isRetweet()) {
+            retweetedPanel.setVisible(true);
+            retweetedPanel.setManaged(true);
             retweetedBy.setText(status.getUser().getName());
         } else {
             retweetedPanel.setVisible(false);
             retweetedPanel.setManaged(false);
+        }
+
+        // Set response information
+        if(status.getInReplyToStatusId() >= 0) {
+            responseAtPanel.setVisible(true);
+            responseAtPanel.setManaged(true);
+
+            Utils.asyncTask(() -> TwitterClient.client().showStatus(status.getInReplyToStatusId()), replied -> {
+                responseTo.setText("@" + replied.getUser().getScreenName());
+                responseToValue = replied;
+            });
+        } else {
+            responseAtPanel.setVisible(false);
+            responseAtPanel.setManaged(false);
         }
 
         // Set user real name
@@ -117,8 +139,50 @@ public class TweetListView {
         if(status.getUser().getId() == TwitterClient.get().getCurrentUser().getId()) {
             retweetButton.setDisable(true);
         }
+
+        // Set responses information
+        // Too much data ?
+        /*
+        Utils.asyncTask(this::getResponses, statuses -> {
+            if(statuses.isEmpty()) {
+                hasResponsePanel.setVisible(false);
+                hasResponsePanel.setManaged(false);
+            } else {
+                hasResponsePanel.setVisible(true);
+                hasResponsePanel.setManaged(true);
+
+                responses.setText(String.valueOf(statuses.size()));
+            }
+        });*/
     }
 
+    private List<Status> getResponses() {
+        ArrayList<Status> replies = new ArrayList<>();
+
+        try {
+            long id = status.getId();
+            String screenName = status.getUser().getScreenName();
+
+            Query query = new Query("@" + screenName + " since_id:" + id);
+            query.setCount(100);
+
+            replies.addAll(TwitterClient.client().search(query)
+                    .getTweets().stream()
+                    .filter(status -> status.getInReplyToStatusId() == id)
+                    .collect(Collectors.toList()));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return replies;
+    }
+
+    /**
+     * Update the tweet content using the provided string.
+     *
+     * @param text The tweet content.
+     */
     private void updateContent(String text) {
         for(String element : Utils.parseTweet(text)) {
             if(element.isEmpty())
@@ -219,13 +283,14 @@ public class TweetListView {
      * Action when the "favorite" button is clicked.
      */
     public void addFavoriteAction() {
+
     }
 
     /**
      * Action when the "see" button is clicked.
      */
     public void seeDetailAction() {
-
+        Utils.showTweetPage(appController, status);
     }
 
     /**
@@ -240,5 +305,21 @@ public class TweetListView {
      */
     public void showRetweetUserAction() {
         Utils.showProfilePage(appController, status.getUser());
+    }
+
+    /**
+     * Action when the response to label is clicked.
+     */
+    public void showResponseTweetAction() {
+        if(responseToValue != null)
+            Utils.showTweetPage(appController, responseToValue);
+    }
+
+    /**
+     * Action when the response author to label is clicked.
+     */
+    public void showResponseUserAction() {
+        if(responseToValue != null)
+            Utils.showProfilePage(appController, responseToValue.getUser());
     }
 }

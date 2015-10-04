@@ -7,6 +7,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
 import javafx.concurrent.Task;
+import twitter4j.Status;
 import twitter4j.User;
 
 import java.awt.*;
@@ -215,6 +216,16 @@ public final class Utils {
      */
     public static void showProfilePage(AppController appController, User user) {
         appController.createWindow("Profil - " + user.getName(), "ProfilView.fxml", Collections.singletonMap("user", user));
+    }
+
+    /**
+     * Show the tweet pahe of tje provided tweet.
+     *
+     * @param appController The application controller.
+     * @param status The tweet.
+     */
+    public static void showTweetPage(AppController appController, Status status) {
+        appController.createWindow("Tweet - " + status.getUser().getName(), "TweetView.fxml", Collections.singletonMap("tweet", status));
     }
 
     @FunctionalInterface
