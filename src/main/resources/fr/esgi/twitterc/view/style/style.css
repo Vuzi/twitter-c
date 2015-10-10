@@ -122,6 +122,10 @@
     -fx-font-size: 160%;
 }
 
+.medias {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 2, 0, 0, 0);
+}
+
 .tweetRetweetPanel {
     -fx-background-color: #f9f9f9;
     -fx-border-color: #eeeeee;

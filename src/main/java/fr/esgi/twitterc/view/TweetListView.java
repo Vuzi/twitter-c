@@ -48,6 +48,7 @@ public class TweetListView {
     public Label responseTo;
     public HBox hasResponsePanel;
     public Label responses;
+    public VBox medias;
 
     // Running values
     private Status status;
@@ -136,8 +137,27 @@ public class TweetListView {
             });
         }
 
+        // Update retweet button
         if(status.getUser().getId() == TwitterClient.get().getCurrentUser().getId()) {
             retweetButton.setDisable(true);
+        }
+        retweetButton.setText(retweetButton.getText() + " (" + status.getRetweetCount() + ")");
+
+        // Update favorite button
+        if(status.isFavorited()) {
+            addFavoriteButton.setText("Retirer des favoris");
+        }
+        addFavoriteButton.setText(addFavoriteButton.getText() + " (" + status.getFavoriteCount() + ")");
+
+        for(MediaEntity mediaEntity : status.getMediaEntities()) {
+            if(mediaEntity.getType().equals("photo")) {
+                Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
+                    ImageView imageView = new ImageView(image);
+                    imageView.setPreserveRatio(true);
+                    imageView.fitWidthProperty().bind(medias.maxWidthProperty());
+                    medias.getChildren().add(imageView);
+                });
+            }
         }
 
         // Set responses information
@@ -233,6 +253,7 @@ public class TweetListView {
      * Action when the "respond" button is clicked.
      */
     public void respondAction() {
+        Utils.showNewTweetPage(appController, status);
     }
 
     /**
@@ -283,7 +304,23 @@ public class TweetListView {
      * Action when the "favorite" button is clicked.
      */
     public void addFavoriteAction() {
-
+        if(status.isFavorited()) {
+            Utils.asyncTask(() -> TwitterClient.client().destroyFavorite(status.getId()), status -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Confirmation favoris");
+                alert.setHeaderText(null);
+                alert.setContentText("Suppression des favoris du tweet de " + status.getUser().getName() + " effectué avec succès !");
+                alert.showAndWait();
+            });
+        } else {
+            Utils.asyncTask(() -> TwitterClient.client().createFavorite(status.getId()), status -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Confirmation favoris");
+                alert.setHeaderText(null);
+                alert.setContentText("Mise en favoris du tweet de " + status.getUser().getName() + " effectué avec succès !");
+                alert.showAndWait();
+            });
+        }
     }
 
     /**

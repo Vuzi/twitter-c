@@ -18,7 +18,6 @@ import twitter4j.*;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -54,7 +53,8 @@ public class ProfileView extends ViewController {
 
     // Running values
     private ProfileViewType type;              // Current type of view displayed
-    private User user;                         // Current user
+  //  private User user;                         // Current user
+    private User relatedUser;                  // User of the profile
 
     private TwitterStream twitterStream;       // Stream
 
@@ -130,17 +130,17 @@ public class ProfileView extends ViewController {
 
     @Override
     protected void onShow(Map<String, Object> params) {
-        User u = (User) params.get("user");
+        relatedUser = (User) params.get("user");
 
-        if(u == null) // Fallthrough case
-            u = TwitterClient.get().getCurrentUser();
+        if(relatedUser == null) // Fallthrough case
+            relatedUser = TwitterClient.get().getCurrentUser();
 
-        updateInfo(u);
+        updateInfo();
     }
 
     @Override
     protected void onHide() {
-        Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Hiding profile view for user : {0}, {1}", user.getScreenName(), user.getName()));
+        Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Hiding profile view for user : {0}, {1}", relatedUser.getScreenName(), relatedUser.getName()));
 
         twitterStream.clearListeners();
 
@@ -162,26 +162,21 @@ public class ProfileView extends ViewController {
 
     /**
      * Update the user information using the provided user.
-     *
-     * @param user The user.
      */
-    private void updateInfo(User user) {
-        Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Profile view for user : {0}, {1}", user.getScreenName(), user.getName()));
+    private void updateInfo() {
+        Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Profile view for user : {0}, {1}", relatedUser.getScreenName(), relatedUser.getName()));
 
         type = ProfileViewType.FOLLOWERS; // Set default value
 
-        // Save user
-        this.user = user;
-
         // Set user real name
-        userName.setText(user.getName());
+        userName.setText(relatedUser.getName());
 
         // Set user TAG
-        userTag.setText("@" + user.getScreenName());
+        userTag.setText("@" + relatedUser.getScreenName());
 
         // Set the banner image (async)
-        if(user.getProfileBannerURL() != null){
-            Utils.asyncTask(() -> new Image(user.getProfileBannerURL().replace("web", "1500x500")), image -> {
+        if(relatedUser.getProfileBannerURL() != null){
+            Utils.asyncTask(() -> new Image(relatedUser.getProfileBannerURL().replace("web", "1500x500")), image -> {
                 BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
                 BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
                 profilePanel.setBackground(new Background(backgroundImage));
@@ -189,8 +184,8 @@ public class ProfileView extends ViewController {
         }
 
         // Set profile image (async)
-        if(user.getProfileImageURL() != null) {
-            Utils.asyncTask(() -> new Image(user.getProfileImageURL().replace("_normal","")), image -> {
+        if(relatedUser.getProfileImageURL() != null) {
+            Utils.asyncTask(() -> new Image(relatedUser.getProfileImageURL().replace("_normal","")), image -> {
                 BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
                 BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
                 profileImage.setBackground(new Background(backgroundImage));
@@ -198,19 +193,19 @@ public class ProfileView extends ViewController {
         }
 
         // Set following count
-        following.setText(String.valueOf(user.getFriendsCount()));
+        following.setText(String.valueOf(relatedUser.getFriendsCount()));
 
         // Set followers count
-        followers.setText(String.valueOf(user.getFollowersCount()));
+        followers.setText(String.valueOf(relatedUser.getFollowersCount()));
 
         // Set tweets count
-        tweets.setText(String.valueOf(user.getStatusesCount()));
+        tweets.setText(String.valueOf(relatedUser.getStatusesCount()));
 
         // Set favorites count
-        favorites.setText(String.valueOf(user.getFavouritesCount()));
+        favorites.setText(String.valueOf(relatedUser.getFavouritesCount()));
 
         // Change the view if this is the authenticated user view
-        if(user.getId() == TwitterClient.get().getCurrentUser().getId()) {
+        if(relatedUser.getId() == TwitterClient.get().getCurrentUser().getId()) {
             timelineButton.setVisible(true);
             timelineButton.setManaged(true);
 
@@ -242,7 +237,7 @@ public class ProfileView extends ViewController {
             followButton.setVisible(true);
             followButton.setManaged(true);
 
-            Utils.asyncTask(() -> TwitterClient.client().showFriendship(TwitterClient.get().getCurrentUser().getId(), user.getId()),
+            Utils.asyncTask(() -> TwitterClient.client().showFriendship(TwitterClient.get().getCurrentUser().getId(), relatedUser.getId()),
                     relationship -> followButton.setDisable(relationship.isSourceFollowingTarget()));
 
             // Update timeline (async)
@@ -258,7 +253,7 @@ public class ProfileView extends ViewController {
     private void filterTimeline(String filter) {
         if(type == ProfileViewType.TWEETS) {
             Utils.asyncTask(() -> {
-                        Query query = new Query("from:" + user.getScreenName() + " " + filter);
+                        Query query = new Query("from:" + relatedUser.getScreenName() + " " + filter);
                         return TwitterClient.client().search(query).getTweets();
                     }, tweetList::setAll);
         }
@@ -332,7 +327,7 @@ public class ProfileView extends ViewController {
      * Show all the tweets of the current user.
      */
     private void showAllSubscribed() {
-        Utils.asyncTask(() -> TwitterClient.client().getFriendsList(user.getId(), -1), users -> {
+        Utils.asyncTask(() -> TwitterClient.client().getFriendsList(relatedUser.getId(), -1), users -> {
             if(users != null)
                 userList.setAll(users);
             tweetListContainer.setVisible(true);
@@ -343,7 +338,7 @@ public class ProfileView extends ViewController {
      * Show all the tweets of the current user.
      */
     private void showAllSubscribers() {
-        Utils.asyncTask(() -> TwitterClient.client().getFollowersList(user.getId(), -1), users ->  {
+        Utils.asyncTask(() -> TwitterClient.client().getFollowersList(relatedUser.getId(), -1), users ->  {
             if(users != null)
                 userList.setAll(users);
             tweetListContainer.setVisible(true);
@@ -354,7 +349,7 @@ public class ProfileView extends ViewController {
      * Show all the tweets of the current user.
      */
     private void showAllTweets() {
-        Utils.asyncTask(() -> TwitterClient.client().getUserTimeline(user.getId(), paging), statuses -> {
+        Utils.asyncTask(() -> TwitterClient.client().getUserTimeline(relatedUser.getId(), paging), statuses -> {
             if(statuses != null)
                 tweetList.setAll(statuses);
             tweetListContainer.setVisible(true);
@@ -365,7 +360,7 @@ public class ProfileView extends ViewController {
      * Show all the favorites tweets of the current user.
      */
     private void showAllFavorites() {
-        Utils.asyncTask(() -> TwitterClient.client().getFavorites(user.getId(), paging), statuses -> {
+        Utils.asyncTask(() -> TwitterClient.client().getFavorites(relatedUser.getId(), paging), statuses -> {
             if(statuses != null)
                 tweetList.setAll(statuses);
             tweetListContainer.setVisible(true);
@@ -387,7 +382,10 @@ public class ProfileView extends ViewController {
      * Action when the "new tweet" button is clicked.
      */
     public void openNewTweetAction() {
-        getAppController().createWindow("Nouveau tweet", "NewTweetView.fxml", Collections.singletonMap("user", user));
+        if(relatedUser.getId() != TwitterClient.get().getCurrentUser().getId())
+            Utils.showNewTweetPage(getAppController(), relatedUser);
+        else
+            Utils.showNewTweetPage(getAppController());
     }
 
     public void showFollowingAction() {

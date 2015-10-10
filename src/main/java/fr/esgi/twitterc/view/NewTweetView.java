@@ -9,6 +9,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
+import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.User;
 
 import java.util.Map;
@@ -31,14 +33,21 @@ public class NewTweetView extends ViewController {
     public Button cancelButton;
 
     public static final String ID = "TWEET-VIEW";
-    private User user;
+
+    private User user;                // User sending the tweet
+    private Status relatedStatus;     // Reply to
+    private User relatedUser;         // User
 
     @Override
     protected void onCreation() {}
 
     @Override
     protected void onShow(Map<String, Object> params) {
-        updateInfo((User) params.get("user"));
+        this.user = TwitterClient.get().getCurrentUser();
+        this.relatedUser = (User) params.get("user");
+        this.relatedStatus = (Status) params.get("status");
+
+        updateInfo();
     }
 
     @Override
@@ -54,14 +63,9 @@ public class NewTweetView extends ViewController {
 
     /**
      * Update the user information using the provided user.
-     *
-     * @param user The user.
      */
-    private void updateInfo(User user) {
+    private void updateInfo() {
         Logger.getLogger(this.getClass().getName()).info("New tweet view for current user");
-
-        // Save user
-        this.user = user;
 
         // Set user real name
         userName.setText(user.getName());
@@ -90,12 +94,20 @@ public class NewTweetView extends ViewController {
         }
 
         // Set remaining chars
-        remainingCharacters.setText("140 caractères restant");
+        remainingCharacters.setText("140 caractères restants");
 
         // Set listener on the tweet content
         tweetValue.textProperty().addListener((observable, oldValue, newValue) -> {
             update(newValue);
         });
+
+        if(relatedStatus != null) {
+            tweetValue.setText("@" + relatedStatus.getUser().getScreenName() + " ");
+            tweetValue.positionCaret(tweetValue.getText().length());
+        } else if(relatedUser != null) {
+            tweetValue.setText("@" + relatedUser.getScreenName() + " ");
+            tweetValue.positionCaret(tweetValue.getText().length());
+        }
     }
 
     /**
@@ -111,10 +123,10 @@ public class NewTweetView extends ViewController {
             if(remaining <= 1)
                 remainingCharacters.setText(remaining + " caractère restant");
             else
-                remainingCharacters.setText(remaining + " caractères restant");
+                remainingCharacters.setText(remaining + " caractères restants");
             remainingCharacters.setStyle("-fx-text-fill: inherit");
         } else {
-            remainingCharacters.setText((-remaining) + " caractères en trop");
+            remainingCharacters.setText((-remaining) + " caractère(s) en trop");
             remainingCharacters.setStyle("-fx-text-fill: darkred");
         }
 
@@ -126,7 +138,12 @@ public class NewTweetView extends ViewController {
      * Action when the "send" button is selected.
      */
     public void sendAction() {
-        Utils.asyncTask(() -> TwitterClient.client().updateStatus(tweetValue.getText()),
+        Utils.asyncTask(() -> {
+                    StatusUpdate statusUpdate = new StatusUpdate(tweetValue.getText());
+                    if(relatedStatus != null)
+                        statusUpdate.setInReplyToStatusId(relatedStatus.getId());
+                    return TwitterClient.client().updateStatus(statusUpdate);
+                },
                 status -> getWindowController().close());
     }
 

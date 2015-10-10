@@ -88,7 +88,7 @@ public class UserListView {
      * Action when the "send tweet" button is clicked.
      */
     public void respondAction() {
-        // TODO
+        Utils.showNewTweetPage(appController, user);
     }
 
     /**

@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.VBox;
 import twitter4j.Query;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 
 import java.io.IOException;
@@ -117,10 +118,10 @@ public class TweetView extends ViewController {
         tweetList.setAll(status);
 
         // Set responses
-        Utils.asyncTask(this::getResponses, repliesList::setAll);
+        Utils.asyncTask(() -> getResponses(20), repliesList::setAll);
     }
 
-    private List<Status> getResponses() {
+    private List<Status> getResponses(int size) {
         ArrayList<Status> replies = new ArrayList<>();
 
         try {
@@ -128,12 +129,17 @@ public class TweetView extends ViewController {
             String screenName = status.getUser().getScreenName();
 
             Query query = new Query("@" + screenName + " since_id:" + id);
-            query.setCount(100);
+            query.setCount(200);
 
-            replies.addAll(TwitterClient.client().search(query)
-                    .getTweets().stream()
-                    .filter(status -> status.getInReplyToStatusId() == id)
-                    .collect(Collectors.toList()));
+            do {
+                QueryResult response = TwitterClient.client().search(query);
+
+                replies.addAll(response.getTweets().stream()
+                        .filter(status -> status.getInReplyToStatusId() == id)
+                        .collect(Collectors.toList()));
+
+                query = response.nextQuery();
+            } while (query != null && replies.size() < size);
 
         } catch (Exception e) {
             e.printStackTrace();

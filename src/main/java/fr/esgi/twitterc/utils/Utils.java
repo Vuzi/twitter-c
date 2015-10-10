@@ -218,14 +218,24 @@ public final class Utils {
         appController.createWindow("Profil - " + user.getName(), "ProfilView.fxml", Collections.singletonMap("user", user));
     }
 
-    /**
-     * Show the tweet pahe of tje provided tweet.
-     *
-     * @param appController The application controller.
-     * @param status The tweet.
-     */
     public static void showTweetPage(AppController appController, Status status) {
         appController.createWindow("Tweet - " + status.getUser().getName(), "TweetView.fxml", Collections.singletonMap("tweet", status));
+    }
+
+    public static void showNewTweetPage(AppController appController, User user) {
+        appController.createWindow("Nouveau tweet - " + user.getName(), "NewTweetView.fxml", Collections.singletonMap("user", user));
+    }
+    public static void showNewTweetPage(AppController appController) {
+        appController.createWindow("Nouveau tweet", "NewTweetView.fxml");
+    }
+
+    public static void showNewTweetPage(AppController appController, Status status) {
+        if(status != null) {
+            if(status.isRetweet())
+                status = status.getRetweetedStatus();
+            appController.createWindow("Nouveau tweet - Réponse à " + status.getUser().getName(), "NewTweetView.fxml", Collections.singletonMap("status", status));
+        } else
+            appController.createWindow("Nouveau tweet", "NewTweetView.fxml");
     }
 
     @FunctionalInterface
