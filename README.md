@@ -1,7 +1,15 @@
 # TwitterC
 Twitter REST client in JavaFX !
 
+**Table of Contents**
 
+- [Description](#)
+- [Some views](#)
+	- [Profile view](#)
+	- [Search view](#)
+- [Usage](#)
+- [Build](#)
+- [Modification](#)
 
 ## Description
 This java application provides basic support of Twitter, using the Twitter REST api (through Twitter4j). Among all the functionality, you'll be able to :
@@ -36,5 +44,5 @@ This a maven project, so all you need to do is what you usually do to build mave
 
 And you'll have a runnable jar containing the application and all its dependencies.
 
-# Modification
+## Modification
 This project is done with Intellij, so all the related project's files are still here. And yes, the project was commited with API key, but don't worry I've changed them !
