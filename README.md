@@ -3,13 +3,13 @@ Twitter REST client in JavaFX !
 
 **Table of Contents**
 
-- [Description](#Description)
-- [Some views](#Some views)
-	- [Profile view](#Profile view)
-	- [Search view](#)
-- [Usage](#)
-- [Build](#)
-- [Modification](#)
+- [Description](#description)
+- [Some views](#some-views)
+	- [Profile view](#profile-view)
+	- [Search view](#search-view)
+- [Usage](#usage)
+- [Build](#build)
+- [Modification](#modification)
 
 ## Description
 This java application provides basic support of Twitter, using the Twitter REST api (through Twitter4j). Among all the functionality, you'll be able to :
