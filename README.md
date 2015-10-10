@@ -3,9 +3,9 @@ Twitter REST client in JavaFX !
 
 **Table of Contents**
 
-- [Description](#)
-- [Some views](#)
-	- [Profile view](#)
+- [Description](#Description)
+- [Some views](#Some views)
+	- [Profile view](#Profile view)
 	- [Search view](#)
 - [Usage](#)
 - [Build](#)
