@@ -57,8 +57,10 @@ public class Main extends AppController {
         // Create the tray image & launch the stream
         createTray();
 
-        if(trayIcon != null)
-            startStream();
+        TwitterClient.get().setOnConnected(twitterClient -> {
+            if(trayIcon != null)
+                startStream();
+        });
 
         if(TwitterClient.get().getCurrentUser() == null)
             createWindow("Connexion à Twitter", "PinView.fxml");

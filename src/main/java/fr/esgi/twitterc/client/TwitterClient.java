@@ -1,5 +1,6 @@
 package fr.esgi.twitterc.client;
 
+import fr.esgi.twitterc.utils.Utils;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -68,6 +69,7 @@ public class TwitterClient {
     private Twitter twitter;
     private User user;
     private RequestToken requestToken;
+    private Utils.Consumer<TwitterClient> onConnected;
 
     /**
      * Private constructor for the twitter client.
@@ -100,6 +102,15 @@ public class TwitterClient {
     }
 
     /**
+     * Set a listener called when the application is connected.
+     *
+     * @param onConnected Called when connected.
+     */
+    public void setOnConnected(Utils.Consumer<TwitterClient> onConnected) {
+        this.onConnected = onConnected;
+    }
+
+    /**
      * Try to authenticate using the saved access token.
      *
      * @throws TwitterClientException Thrown if no token is saved, or the loaded token does not work.
@@ -113,12 +124,14 @@ public class TwitterClient {
             // Test the token
             try {
                 user = twitter.verifyCredentials();
+
+                if(onConnected != null)
+                    onConnected.apply(this);
             } catch (TwitterException e) {
                 throw new TwitterClientException("Error while using the saved access token", e);
             }
-        }
-
-        throw new TwitterClientException("No saved access token");
+        } else
+            throw new TwitterClientException("No saved access token");
     }
 
     /**

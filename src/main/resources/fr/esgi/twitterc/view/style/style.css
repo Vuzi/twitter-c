@@ -8,6 +8,10 @@
  * Panel Info elements
  */
 
+#profilePanel {
+    -fx-background-image: url("/fr/esgi/twitterc/view/image/bg.jpg");
+}
+
 /* Main rules */
 .profilePanel {
     -fx-background-color: #eeeeee;
@@ -39,6 +43,10 @@
 /* Profile image */
 .profileImage {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 50, 0, 0, 0);
+}
+
+#profileMainImage {
+    -fx-background-color: #f9f9f9;
 }
 
 .profileImageBorder {
@@ -180,4 +188,20 @@
 
 .tweetTextArea:focused .content {
     -fx-background-color: #fff;
+}
+
+.pinView {
+    -fx-background-color: white;
+}
+
+.pinView WebView {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 0);
+}
+
+.pinViewInfo {
+    -fx-padding: 10;
+    -fx-background-color: white;
+    -fx-border-color: #eeeeee;
+    -fx-border-style: solid;
+    -fx-border-width: 2px;
 }

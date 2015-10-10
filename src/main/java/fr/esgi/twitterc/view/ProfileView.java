@@ -30,7 +30,7 @@ public class ProfileView extends ViewController {
 
     // XML values
     public AnchorPane profilePanel; // Background image
-    public Pane profileImage;       // Profile image
+    public Pane profileMainImage;   // Profile image
     public Label userName;          // User long name
     public Label userTag;           // User tag name
     public Label followingTitle;    // Following panel title
@@ -188,7 +188,7 @@ public class ProfileView extends ViewController {
             Utils.asyncTask(() -> new Image(relatedUser.getProfileImageURL().replace("_normal","")), image -> {
                 BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, true, true, false, true);
                 BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-                profileImage.setBackground(new Background(backgroundImage));
+                profileMainImage.setBackground(new Background(backgroundImage));
             });
         }
 
