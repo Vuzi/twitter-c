@@ -18,7 +18,7 @@ This java application provides basic support of Twitter, using the Twitter REST 
 - See anybody profile
 - Send tweet
  
-The general style of the application is pretty much a visual rip-off of twitter's web interface, using JavaFx. But hey, that's a cool style.
+The general style of the application is pretty much a visual rip-off of twitter's web interface, using JavaFx. But hey, that's a cool style. The communication with twitter is made with the wonderful [twitter4j](http://twitter4j.org/en/index.html).
  
 ## Some views
 ### Profile view
@@ -29,6 +29,12 @@ The general style of the application is pretty much a visual rip-off of twitter'
 
 ## Usage
 Just run the provided Jar !
+
+You'll need to accept our app to use your twitter account on the first view (either by using the provided link, and copy/pasting the pin code, or by using the framed web view).
+
+### Requirements
+- Java 1.8
+- A Twitter account
 
 ## Build
 Note : you'll need an app public/private key from twitter to run this, and replace it in the properties of the pom.xml file :
