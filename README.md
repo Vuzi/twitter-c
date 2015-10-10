@@ -8,6 +8,7 @@ Twitter REST client in JavaFX !
 	- [Profile view](#profile-view)
 	- [Search view](#search-view)
 - [Usage](#usage)
+        - [Requirements](#requirements)
 - [Build](#build)
 - [Modification](#modification)
 
@@ -28,7 +29,7 @@ The general style of the application is pretty much a visual rip-off of twitter'
 ![alt tag](http://i.imgur.com/HlsZeBF.png)
 
 ## Usage
-Just run the provided Jar !
+Just run the provided Jar ! You can download it from the release part of the repo : https://github.com/Vuzi/TwitterC/releases/tag/1.0
 
 You'll need to accept our app to use your twitter account on the first view (either by using the provided link, and copy/pasting the pin code, or by using the framed web view).
 
