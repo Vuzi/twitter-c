@@ -13,6 +13,8 @@ import java.awt.*;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -30,11 +32,30 @@ public class Main extends AppController {
     public static void main(String[] args) {
         Logger.getLogger(Main.class.getName()).info("TwitterClient started");
 
+        // Load the properties
+        Properties p = new Properties();
+        InputStream inputStream =  Main.class.getClassLoader().getResourceAsStream("conf.properties");
+
+        try {
+            p.load(inputStream);
+
+            if(!p.containsKey("twitter.api.key") || !p.containsKey("twitter.api.secret")) {
+                Logger.getLogger(Main.class.getName()).info("Required properties not set !");
+                System.exit(1);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.getLogger(Main.class.getName()).info("Could not load the properties : " + e.getMessage());
+            System.exit(1);
+        }
+
+        // Avoid implicit exit when all windows are closed
         Platform.setImplicitExit(false);
 
         // Load and try to load the access token
         try {
-            TwitterClient.initialize().authenticate();
+            TwitterClient.initialize(p.getProperty("twitter.api.key"), p.getProperty("twitter.api.secret")).authenticate();
         } catch (TwitterClientException e) {
             e.printStackTrace();
         }

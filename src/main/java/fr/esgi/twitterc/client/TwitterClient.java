@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 public class TwitterClient {
 
     // Static values
-    private static boolean isInitialized;
-    private static TwitterClient twitterClient;
+    private static boolean IS_INITIALIZED;
+    private static TwitterClient TWITTER_CLIENT;
     private static String SERIALIZED_TOKEN_FILENAME = "accessToken.bin";
 
     /**
@@ -30,10 +30,7 @@ public class TwitterClient {
      * @return The twitter client instance.
      */
     public static TwitterClient get() {
-        if(!TwitterClient.isInitialized)
-            return initialize();
-
-        return TwitterClient.twitterClient;
+        return TwitterClient.TWITTER_CLIENT;
     }
 
     /**
@@ -51,18 +48,18 @@ public class TwitterClient {
      *
      * @return The twitter client instance.
      */
-    public static TwitterClient initialize() {
-        if(TwitterClient.isInitialized)
-            return TwitterClient.twitterClient;
+    public static TwitterClient initialize(String apiKey, String apiSecret) {
+        if(TwitterClient.IS_INITIALIZED)
+            return TwitterClient.TWITTER_CLIENT;
 
         TwitterFactory tf = new TwitterFactory(
                 new ConfigurationBuilder()
-                        .setOAuthConsumerKey("lH6JSO5KsVrLDb0bpRjwRKz6J")
-                        .setOAuthConsumerSecret("eO1DeOaZdKpXJc5kGEhbD9aWM2zqmOsPnLoMXQU4MOO6cc5FvW")
+                        .setOAuthConsumerKey(apiKey)
+                        .setOAuthConsumerSecret(apiSecret)
                         .setOAuthAccessToken(null)
                         .setOAuthAccessTokenSecret(null).build());
 
-        return TwitterClient.twitterClient = new TwitterClient(tf.getInstance());
+        return TwitterClient.TWITTER_CLIENT = new TwitterClient(tf.getInstance());
     }
 
     // Instance values
@@ -77,8 +74,8 @@ public class TwitterClient {
      * @param twitter The wrapped twitter4j client.
      */
     private TwitterClient(Twitter twitter) {
-        TwitterClient.isInitialized = true;
-        TwitterClient.twitterClient = this;
+        TwitterClient.IS_INITIALIZED = true;
+        TwitterClient.TWITTER_CLIENT = this;
 
         this.twitter = twitter;
     }
