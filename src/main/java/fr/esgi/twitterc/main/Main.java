@@ -125,7 +125,12 @@ public class Main extends AppController {
                 tray.add(trayIcon);
 
                 // Add listeners
-                showItem.addActionListener(e -> Platform.runLater(() -> Utils.showProfilePage(this, TwitterClient.get().getCurrentUser())));
+                showItem.addActionListener(e -> Platform.runLater(() -> {
+                    if(TwitterClient.get().getCurrentUser() != null)
+                        Utils.showProfilePage(this, TwitterClient.get().getCurrentUser());
+                    else
+                        createWindow("Connexion à Twitter", "PinView.fxml");
+                }));
                 quitItem.addActionListener(e -> {
                     tray.remove(trayIcon);
                     Platform.runLater(() -> {
