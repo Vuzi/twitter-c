@@ -33,6 +33,8 @@ Just run the provided Jar ! You can download it from the release part of the rep
 
 You'll need to accept our app to use your twitter account on the first view (either by using the provided link, and copy/pasting the pin code, or by using the framed web view).
 
+Note that the app will save your current access token in a file named 'accessToken.bin' in the current directory. If this file is deleted, modified or moved authentication will be re-asked at the app launch.
+
 ### Requirements
 - Java 1.8
 - A Twitter account
