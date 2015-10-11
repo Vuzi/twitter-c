@@ -49,7 +49,7 @@ Note : you'll need an app public/private key from twitter to run this, and repla
 
 This a maven project, so all you need to do is what you usually do to build maven project :
 
-   mvn package
+    mvn package
 
 And you'll have a runnable jar containing the application and all its dependencies.
 
