@@ -53,7 +53,6 @@ public class ProfileView extends ViewController {
 
     // Running values
     private ProfileViewType type;              // Current type of view displayed
-  //  private User user;                         // Current user
     private User relatedUser;                  // User of the profile
 
     private TwitterStream twitterStream;       // Stream
@@ -238,7 +237,10 @@ public class ProfileView extends ViewController {
             followButton.setManaged(true);
 
             Utils.asyncTask(() -> TwitterClient.client().showFriendship(TwitterClient.get().getCurrentUser().getId(), relatedUser.getId()),
-                    relationship -> followButton.setDisable(relationship.isSourceFollowingTarget()));
+                    relationship -> {
+                        if (relationship.isSourceFollowingTarget())
+                            followButton.setText("Ne plus suivre");
+                    });
 
             // Update timeline (async)
             showTweetAction();
@@ -489,7 +491,22 @@ public class ProfileView extends ViewController {
     }
 
     public void openFollowAction() {
-        // TODO
+
+
+        Utils.asyncTask(() -> TwitterClient.client().showFriendship(TwitterClient.get().getCurrentUser().getId(), relatedUser.getId()),
+                relationship -> {
+                    try {
+                        if (relationship.isSourceFollowingTarget()) {
+                            TwitterClient.client().destroyFriendship(relatedUser.getId());
+                            followButton.setText("Suivre");
+                        } else {
+                            TwitterClient.client().createFriendship(relatedUser.getId());
+                            followButton.setText("Ne plus suivre");
+                        }
+                    } catch (TwitterException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }
 
@@ -512,7 +529,12 @@ enum ProfileViewType {
      */
     FOLLOWERS,
 
-    TIMELINE, /**
+    /**
+     * Timeline of the current user.
+     */
+    TIMELINE,
+
+    /**
      * Will show all the subscriptions the user had made.
      */
     FOLLOWED
