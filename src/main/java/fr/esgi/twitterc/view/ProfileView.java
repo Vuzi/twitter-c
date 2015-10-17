@@ -1,6 +1,7 @@
 package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.main.TwitterCController;
 import fr.esgi.twitterc.utils.CustomClassLoader;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
@@ -491,16 +492,16 @@ public class ProfileView extends ViewController {
     }
 
     public void openFollowAction() {
-
-
         Utils.asyncTask(() -> TwitterClient.client().showFriendship(TwitterClient.get().getCurrentUser().getId(), relatedUser.getId()),
                 relationship -> {
                     try {
                         if (relationship.isSourceFollowingTarget()) {
                             TwitterClient.client().destroyFriendship(relatedUser.getId());
+                            ((TwitterCController) getAppController()).showNotification("Information", "Vous ne suivez plus " + relatedUser.getScreenName());
                             followButton.setText("Suivre");
                         } else {
                             TwitterClient.client().createFriendship(relatedUser.getId());
+                            ((TwitterCController) getAppController()).showNotification("Information", "Vous suivez désormais " + relatedUser.getScreenName());
                             followButton.setText("Ne plus suivre");
                         }
                     } catch (TwitterException e) {

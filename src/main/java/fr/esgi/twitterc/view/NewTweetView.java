@@ -1,6 +1,7 @@
 package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.main.TwitterCController;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
 
@@ -144,7 +145,10 @@ public class NewTweetView extends ViewController {
                         statusUpdate.setInReplyToStatusId(relatedStatus.getId());
                     return TwitterClient.client().updateStatus(statusUpdate);
                 },
-                status -> getWindowController().close());
+                status -> {
+                    getWindowController().close();
+                    ((TwitterCController) getAppController()).showNotification("Information", "Tweet effectué !");
+                });
     }
 
     /**

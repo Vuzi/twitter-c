@@ -1,13 +1,12 @@
 package fr.esgi.twitterc.view;
 
 import fr.esgi.twitterc.client.TwitterClient;
+import fr.esgi.twitterc.main.TwitterCController;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.AppController;
 import fr.esgi.twitterc.view.controller.ViewController;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -17,11 +16,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import twitter4j.*;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -51,11 +48,11 @@ public class TweetListView {
     public VBox medias;
 
     // Running values
-    private Status status;
-    private Image userImage;
-    private AppController appController;
-    private User author;
-    private Status responseToValue;
+    private Status status;                 // Status displayed
+    private Image userImage;               // Status' author's image
+    private AppController appController;   // Application controller
+    private User author;                   // Status' author
+    private Status responseToValue;        // Status answered by the current status
 
     /**
      * Set the controller.
@@ -141,14 +138,17 @@ public class TweetListView {
         if(status.getUser().getId() == TwitterClient.get().getCurrentUser().getId()) {
             retweetButton.setDisable(true);
         }
-        retweetButton.setText(retweetButton.getText() + " (" + status.getRetweetCount() + ")");
+        retweetButton.setText("Retweeter (" + status.getRetweetCount() + ")");
 
         // Update favorite button
         if(status.isFavorited()) {
-            addFavoriteButton.setText("Retirer des favoris");
+            addFavoriteButton.setText("Retirer des favoris (" + status.getFavoriteCount() + ")");
+        } else {
+            addFavoriteButton.setText("Ajouter aux favoris (" + status.getFavoriteCount() + ")");
         }
-        addFavoriteButton.setText(addFavoriteButton.getText() + " (" + status.getFavoriteCount() + ")");
 
+        // Update media images
+        medias.getChildren().clear();
         for(MediaEntity mediaEntity : status.getMediaEntities()) {
             if(mediaEntity.getType().equals("photo")) {
                 Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
@@ -264,61 +264,37 @@ public class TweetListView {
         if(status == null)
             return;
 
-        // Show confirmation
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation retweet");
-        alert.setHeaderText("Confirmation de retweet");
+        Utils.asyncTask(() -> TwitterClient.client().retweetStatus(status.getId()), status -> {
+            ((TwitterCController) appController).showNotification("Retweet", "Retweet effectué avec succès !");
 
-        if(userImage != null)
-            alert.setGraphic(new ImageView(userImage));
-
-        alert.setContentText(MessageFormat.format("Êtes-vous certain de vouloir retweeter le message de {0} :\n\"{1}\" ?",
-                status.getUser().getName(), status.isRetweet() ? status.getRetweetedStatus().getText() : status.getText()));
-
-        if(alert.showAndWait().get() == ButtonType.OK) {
-            try {
-                TwitterClient.client().retweetStatus(status.getId());
-
-                // Show success
-                alert.setTitle("Retweet effectué");
-                alert.setAlertType(Alert.AlertType.INFORMATION);
-                alert.setHeaderText(null);
-                alert.setContentText("Retweet effectué avec succès !");
-                alert.showAndWait();
-
-            } catch (TwitterException e) {
-                Logger.getLogger(this.getClass().getName()).info("Error while retweeting status : " + e.getMessage());
-                e.printStackTrace();
-
-                // Show that an error occurred
-                alert.setTitle("Erreur durant le retweet");
-                alert.setAlertType(Alert.AlertType.ERROR);
-                alert.setHeaderText(null);
-                alert.setContentText("Le retweet n'a pas pu être effectué...");
-                alert.showAndWait();
-            }
-        }
+            this.status = status;
+            update(status);
+        });
     }
 
     /**
      * Action when the "favorite" button is clicked.
      */
     public void addFavoriteAction() {
+
+        if(status == null)
+            return;
+
         if(status.isFavorited()) {
             Utils.asyncTask(() -> TwitterClient.client().destroyFavorite(status.getId()), status -> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Confirmation favoris");
-                alert.setHeaderText(null);
-                alert.setContentText("Suppression des favoris du tweet de " + status.getUser().getName() + " effectué avec succès !");
-                alert.showAndWait();
+                ((TwitterCController) appController).showNotification("Confirmation favoris",
+                        "Suppression des favoris du tweet de " + status.getUser().getName() + " effectué avec succès !");
+
+                this.status = status;
+                update(status);
             });
         } else {
             Utils.asyncTask(() -> TwitterClient.client().createFavorite(status.getId()), status -> {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Confirmation favoris");
-                alert.setHeaderText(null);
-                alert.setContentText("Mise en favoris du tweet de " + status.getUser().getName() + " effectué avec succès !");
-                alert.showAndWait();
+                ((TwitterCController) appController).showNotification("Confirmation favoris",
+                        "Mise en favoris du tweet de " + status.getUser().getName() + " effectué avec succès !");
+
+                this.status = status;
+                update(status);
             });
         }
     }

@@ -121,6 +121,12 @@ public class TweetView extends ViewController {
         Utils.asyncTask(() -> getResponses(20), repliesList::setAll);
     }
 
+    /**
+     * Try to return the number of specified response to the actual tweet.
+     *
+     * @param size Maximum number of answer to get.
+     * @return Status answering the view's status.
+     */
     private List<Status> getResponses(int size) {
         ArrayList<Status> replies = new ArrayList<>();
 

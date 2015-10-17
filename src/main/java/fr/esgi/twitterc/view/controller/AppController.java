@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Main controller of the application.
+ * TwitterCController controller of the application.
  *
  * Created by Vuzi on 22/09/2015.
  */

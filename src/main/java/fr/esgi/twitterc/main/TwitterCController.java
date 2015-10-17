@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  *
  * Created by Vuzi on 23/09/2015.
  */
-public class Main extends AppController {
+public class TwitterCController extends AppController {
 
     /**
      * Entry point.
@@ -30,23 +30,23 @@ public class Main extends AppController {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-        Logger.getLogger(Main.class.getName()).info("TwitterClient started");
+        Logger.getLogger(TwitterCController.class.getName()).info("TwitterClient started");
 
         // Load the properties
         Properties p = new Properties();
-        InputStream inputStream =  Main.class.getClassLoader().getResourceAsStream("conf.properties");
+        InputStream inputStream =  TwitterCController.class.getClassLoader().getResourceAsStream("conf.properties");
 
         try {
             p.load(inputStream);
 
             if(!p.containsKey("twitter.api.key") || !p.containsKey("twitter.api.secret")) {
-                Logger.getLogger(Main.class.getName()).info("Required properties not set !");
+                Logger.getLogger(TwitterCController.class.getName()).info("Required properties not set !");
                 System.exit(1);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            Logger.getLogger(Main.class.getName()).info("Could not load the properties : " + e.getMessage());
+            Logger.getLogger(TwitterCController.class.getName()).info("Could not load the properties : " + e.getMessage());
             System.exit(1);
         }
 
@@ -61,7 +61,7 @@ public class Main extends AppController {
         }
 
         // Show the views
-        Main.launch(Main.class, args);
+        TwitterCController.launch(TwitterCController.class, args);
     }
 
     // Controller values
@@ -78,17 +78,18 @@ public class Main extends AppController {
         // Create the tray image & launch the stream
         createTray();
 
-        TwitterClient.get().setOnConnected(twitterClient -> {
-            if(trayIcon != null)
+        if(trayIcon != null) {
+            if(TwitterClient.get().getCurrentUser() != null)
                 startStream();
-        });
+            else
+                TwitterClient.get().setOnConnected(twitterClient -> startStream());
+        }
 
         if(TwitterClient.get().getCurrentUser() == null)
             createWindow("Connexion à Twitter", "PinView.fxml");
         else
             Utils.showProfilePage(this, TwitterClient.get().getCurrentUser());
     }
-
 
     @Override
     protected void onEnd() {
@@ -99,6 +100,14 @@ public class Main extends AppController {
         }
     }
 
+    public void showNotification(String title, String message) {
+        if(trayIcon != null)
+            trayIcon.displayMessage(title, message, TrayIcon.MessageType.NONE);
+    }
+
+    /**
+     * Start the twitter stream for the main application thread.
+     */
     private void startStream() {
         Logger.getLogger(this.getClass().getName()).info("Creation of the user stream from Twitter...");
 
@@ -110,11 +119,12 @@ public class Main extends AppController {
                 @Override
                 public void onStatus(Status status) {
                     trayIcon.displayMessage("Nouveau tweet @" + status.getUser().getName(), status.getText(), TrayIcon.MessageType.NONE);
+                    showNotification("Nouveau tweet @" + status.getUser().getName(), status.getText());
                 }
 
                 @Override
                 public void onFavorite(User source, User target, Status favoritedStatus) {
-                    trayIcon.displayMessage("Nouveau favoris !", source.getScreenName() + " a mis en favoris un de vos tweets", TrayIcon.MessageType.NONE);
+                    showNotification("Nouveau favoris !", source.getScreenName() + " a mis en favoris un de vos tweets");
                 }
             };
             twitterStream.addListener(listener);
@@ -124,6 +134,9 @@ public class Main extends AppController {
         }
     }
 
+    /**
+     * Create the system icon tray, allowing to display notifications for the user.
+     */
     private void createTray() {
         if(SystemTray.isSupported()) {
             try {
@@ -138,7 +151,7 @@ public class Main extends AppController {
                 popup.add(quitItem);
 
                 // Tray image
-                BufferedImage trayIconImage = ImageIO.read(Main.class.getResource("/fr/esgi/twitterc/view/image/twitter.png"));
+                BufferedImage trayIconImage = ImageIO.read(TwitterCController.class.getResource("/fr/esgi/twitterc/view/image/twitter.png"));
                 int trayIconWidth = new TrayIcon(trayIconImage).getSize().width;
                 this.trayIcon = new TrayIcon(trayIconImage.getScaledInstance(trayIconWidth, -1, Image.SCALE_SMOOTH), "TwitterC", popup);
 

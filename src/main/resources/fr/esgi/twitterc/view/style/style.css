@@ -12,7 +12,7 @@
     -fx-background-image: url("/fr/esgi/twitterc/view/image/bg.jpg");
 }
 
-/* Main rules */
+/* TwitterCController rules */
 .profilePanel {
     -fx-background-color: #eeeeee;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
