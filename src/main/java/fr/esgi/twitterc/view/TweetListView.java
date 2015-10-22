@@ -160,8 +160,8 @@ public class TweetListView {
             } else if(mediaEntity.getType().equals("video") || mediaEntity.getType().equals("animated_gif")) {
                 // If video, show image preview
                 Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
-                    if(image != null && mediaEntity.getVideoVariants().length > 0)
-                        medias.getChildren().add(new TwitterMediaVideoView(image, "http" + mediaEntity.getVideoVariants()[0].getUrl().substring(5)));
+                    if(image != null && mediaEntity.getVideoVariants().length >= 1)
+                        medias.getChildren().add(new TwitterMediaVideoView(image, "http" + mediaEntity.getVideoVariants()[1].getUrl().substring(5)));
                 });
             }
 

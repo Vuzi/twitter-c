@@ -5,12 +5,17 @@ import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.WindowEvent;
 
+/**
+ * Media (video) view.
+ */
 public class TwitterMediaVideoView extends TwitterMediaView {
 
 
     private String videoURL;
-    private Media media;
+    private MediaPlayer mediaPlayer;
+    private boolean playing;
 
     public TwitterMediaVideoView(Image previewImage, String videoURL) {
         this();
@@ -23,6 +28,8 @@ public class TwitterMediaVideoView extends TwitterMediaView {
 
     public void setVideo(Image previewImage, String videoURL) {
         setImage(previewImage);
+        mediaPlayer = null;
+        playing = false;
 
         if(imageView == null || videoURL == null)
             return;
@@ -31,37 +38,77 @@ public class TwitterMediaVideoView extends TwitterMediaView {
     }
 
     private void showVideo() {
-        videoControls.setOpacity(0);
+        showPlayerControls(false);
 
-        if(media == null)
-            media = new Media(videoURL);
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        if(mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer(new Media(videoURL));
+        } else {
+            mediaPlayer.getOnReady().run(); // Force ready
+            mediaPlayer.play();
+        }
 
         MediaView mediaView = new MediaView(mediaPlayer);
-        mediaView.setFitWidth(590);
+        mediaView.setFitWidth(imageView.getFitWidth());
+
+        mediaView.setOnMouseClicked(event -> startOrStopVideo());
 
         mediaPlayer.setOnReady(() -> {
             mediaContent.getChildren().set(0, mediaView);
             mediaPlayer.play();
+            playing = true;
         });
 
         mediaPlayer.setOnEndOfMedia(() -> {
-            videoControls.setOpacity(1);
+            showPlayerControls(true);
             mediaContent.getChildren().set(0, imageView);
+            mediaPlayer.stop();
+            playing = false;
         });
+
+        getScene().getWindow().addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, event -> cleanVideo());
 
         sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene == null) {
-                mediaPlayer.stop();
-                videoControls.setOpacity(1);
-                mediaContent.getChildren().set(0, imageView);
+                cleanVideo();
             }
         });
     }
 
-    @FXML
-    protected void showMedia() {
-        super.showMedia();
+    private void cleanVideo() {
+        playing = false;
+        mediaPlayer.stop();
+        mediaPlayer.dispose();
+        mediaPlayer = null;
+
+        mediaContent.getChildren().set(0, imageView);
+    }
+
+    /**
+     * Start or stop the video based on the current player states. Also hide/show the controls.
+     */
+    private void startOrStopVideo() {
+        if (mediaPlayer.getStatus().equals(MediaPlayer.Status.PLAYING)) {
+            mediaPlayer.pause();
+            showPlayerControls(true);
+        } else {
+            mediaPlayer.play();
+            showPlayerControls(false);
+        }
+    }
+
+    /**
+     * Show the video controls.
+     *
+     * @param show True to show, false to hide.
+     */
+    private void showPlayerControls(boolean show) {
+        videoControls.setVisible(show);
+        videoControls.setManaged(show);
+    }
+
+    @Override
+    protected void showImageFull() {
+        super.showImageFull();
 
         videoControls.setVisible(true);
         videoControls.setManaged(true);
@@ -69,7 +116,9 @@ public class TwitterMediaVideoView extends TwitterMediaView {
 
     @FXML
     protected void playMedia() {
-        if (!preview)
+        if(playing)
+            startOrStopVideo();
+        else if (!preview)
             showVideo();
     }
 

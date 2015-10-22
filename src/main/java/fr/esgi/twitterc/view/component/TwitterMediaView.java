@@ -10,6 +10,9 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
+/**
+ * Media (image) view.
+ */
 public class TwitterMediaView extends GridPane {
 
     @FXML
@@ -68,8 +71,10 @@ public class TwitterMediaView extends GridPane {
 
         if(image.getHeight() > MEDIA_PREVIEW_HEIGHT * 1.3)
             showImagePreview();
-        else
+        else {
             showImageFull();
+            preview = false;
+        }
 
         mediaContent.getChildren().add(imageView);
     }
