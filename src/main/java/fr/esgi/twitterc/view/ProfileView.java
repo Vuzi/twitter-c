@@ -5,21 +5,28 @@ import fr.esgi.twitterc.main.TwitterCController;
 import fr.esgi.twitterc.utils.CustomClassLoader;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 import twitter4j.*;
 
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -33,6 +40,8 @@ public class ProfileView extends ViewController {
     // XML values
     public AnchorPane profilePanel; // Background image
     public Pane profileMainImage;   // Profile image
+    public AnchorPane profileContentPanel; // Profile content panel
+    public Pane profileImagePanel;  // Profile image panel
     public Label userName;          // User long name
     public Label userTag;           // User tag name
     public Label followingTitle;    // Following panel title
@@ -48,10 +57,17 @@ public class ProfileView extends ViewController {
     public VBox tweetListView;      // List of views
     public TextField searchValue;   // Filtering tweet values
     public VBox tweetListContainer; // Container for the tweet list view
+    public ScrollPane tweetListScrollContainer; // Main panel container scrollview
     public Button waitingTweets;    // Button when multiple tweets have been received but not displayed
     public Button followButton;     // Follow button
 
     public static final String ID = "PROFILE";
+
+    // Animations
+    private Timeline timelineMainPanel;
+    private Timeline timelineRevertMainPanel;
+    private Timeline timelineAvatarSize;
+    private Timeline timelineRevertAvatarSize;
 
     // Running values
     private ProfileViewType type;              // Current type of view displayed
@@ -63,6 +79,9 @@ public class ProfileView extends ViewController {
     private ObservableList<User> userList;     // List of users
     private ArrayList<Status> waitingTweetList;// List of tweets waiting
     private Paging paging;                     // Paging
+
+    boolean inUpdate = false;                  // True when updating any list, false otherwise
+    boolean inReadMode = false;
 
     // Performance test
     private ClassLoader cachingClassLoader = new CustomClassLoader(FXMLLoader.getDefaultClassLoader());
@@ -126,6 +145,66 @@ public class ProfileView extends ViewController {
             twitterStream.setOAuthAccessToken(TwitterClient.client().getOAuthAccessToken());
         } catch (TwitterException e) {
             e.printStackTrace();
+        }
+
+        // Infinite scroll
+        final double[] lastPosition = {-1};
+        ChangeListener<Object> changeListener = (observable, oldValue, newValue) -> {
+            if( tweetListScrollContainer.getVvalue() != lastPosition[0]) {
+                lastPosition[0] = tweetListScrollContainer.getVvalue();
+                if (tweetListScrollContainer.getVvalue() >= 1.0) {
+                    autoScrollNext();
+                }
+            }
+        };
+        tweetListScrollContainer.viewportBoundsProperty().addListener(changeListener);
+        tweetListScrollContainer.hvalueProperty().addListener(changeListener);
+        tweetListScrollContainer.vvalueProperty().addListener(changeListener);
+
+        // Prepare the animations
+        prepareAnimations();
+    }
+
+    private void prepareAnimations() {
+        DoubleProperty mainPanelOffset = new SimpleDoubleProperty(this, "mainPanelOffset");
+        DoubleProperty avatarSize = new SimpleDoubleProperty(this, "avatarSize");
+
+        // Main panel animation
+        mainPanelOffset.addListener(it -> AnchorPane.setTopAnchor(profileContentPanel, mainPanelOffset.get()));
+
+        KeyFrame keyFrame1 = new KeyFrame(Duration.millis(0), new KeyValue(mainPanelOffset, 205));
+        KeyFrame keyFrame2 = new KeyFrame(Duration.millis(500), new KeyValue(mainPanelOffset, 50));
+        timelineMainPanel = new Timeline();
+        timelineMainPanel.getKeyFrames().addAll(keyFrame1, keyFrame2);
+
+        keyFrame1 = new KeyFrame(Duration.millis(0), new KeyValue(mainPanelOffset, 50));
+        keyFrame2 = new KeyFrame(Duration.millis(500), new KeyValue(mainPanelOffset, 205));
+        timelineRevertMainPanel = new Timeline();
+        timelineRevertMainPanel.getKeyFrames().addAll(keyFrame1, keyFrame2);
+
+        // Avatar animation
+        avatarSize.addListener(it -> {
+            profileImagePanel.setScaleX(avatarSize.get());
+            profileImagePanel.setScaleY(avatarSize.get());
+        });
+
+        keyFrame1 = new KeyFrame(Duration.millis(0), new KeyValue(avatarSize, 1));
+        keyFrame2 = new KeyFrame(Duration.millis(500), new KeyValue(avatarSize, 0.6));
+        timelineAvatarSize = new Timeline();
+        timelineAvatarSize.getKeyFrames().addAll(keyFrame1, keyFrame2);
+
+        keyFrame1 = new KeyFrame(Duration.millis(0), new KeyValue(avatarSize, 0.6));
+        keyFrame2 = new KeyFrame(Duration.millis(500), new KeyValue(avatarSize, 1));
+        timelineRevertAvatarSize = new Timeline();
+        timelineRevertAvatarSize.getKeyFrames().addAll(keyFrame1, keyFrame2);
+    }
+
+    private void autoScrollNext() {
+        if(!inUpdate) {
+            inUpdate = true;
+            int newPage = paging.getPage() + 1;
+            paging = new Paging(newPage, 30);
+            updateTimeline();
         }
     }
 
@@ -255,12 +334,10 @@ public class ProfileView extends ViewController {
      * @param filter The string filter.
      */
     private void filterTimeline(String filter) {
-        if(type == ProfileViewType.TWEETS) {
-            Utils.asyncTask(() -> {
-                        Query query = new Query("from:" + relatedUser.getScreenName() + " " + filter);
-                        return TwitterClient.client().search(query).getTweets();
-                    }, tweetList::setAll);
-        }
+        Utils.asyncTask(() -> {
+            Query query = new Query("from:" + relatedUser.getScreenName() + " " + filter);
+                return TwitterClient.client().search(query).getTweets();
+            }, tweetList::setAll);
     }
 
     /**
@@ -298,10 +375,10 @@ public class ProfileView extends ViewController {
     private void updateTimeline() {
 
         // Empty all the lists & hide buttons
-        tweetList.clear();
-        userList.clear();
+        //tweetList.clear();
+        //userList.clear();
 
-        tweetListContainer.setVisible(false);
+        //tweetListContainer.setVisible(false);
 
         // Clear loaded data
         waitingTweetList.clear();
@@ -333,7 +410,7 @@ public class ProfileView extends ViewController {
     private void showAllSubscribed() {
         Utils.asyncTask(() -> TwitterClient.client().getFriendsList(relatedUser.getId(), -1), users -> {
             if(users != null)
-                userList.setAll(users);
+                userList.addAll(users);
             tweetListContainer.setVisible(true);
         });
     }
@@ -344,7 +421,7 @@ public class ProfileView extends ViewController {
     private void showAllSubscribers() {
         Utils.asyncTask(() -> TwitterClient.client().getFollowersList(relatedUser.getId(), -1), users ->  {
             if(users != null)
-                userList.setAll(users);
+                userList.addAll(users);
             tweetListContainer.setVisible(true);
         });
     }
@@ -355,8 +432,9 @@ public class ProfileView extends ViewController {
     private void showAllTweets() {
         Utils.asyncTask(() -> TwitterClient.client().getUserTimeline(relatedUser.getId(), paging), statuses -> {
             if(statuses != null)
-                tweetList.setAll(statuses);
+                tweetList.addAll(statuses);
             tweetListContainer.setVisible(true);
+            inUpdate = false;
         });
     }
 
@@ -366,8 +444,9 @@ public class ProfileView extends ViewController {
     private void showAllFavorites() {
         Utils.asyncTask(() -> TwitterClient.client().getFavorites(relatedUser.getId(), paging), statuses -> {
             if(statuses != null)
-                tweetList.setAll(statuses);
+                tweetList.addAll(statuses);
             tweetListContainer.setVisible(true);
+            inUpdate = false;
         });
     }
 
@@ -376,21 +455,14 @@ public class ProfileView extends ViewController {
      */
     private void showTimeline() {
         Utils.asyncTask(() -> TwitterClient.client().getHomeTimeline(paging), statuses -> {
-            if(statuses != null)
-                tweetList.setAll(statuses);
+            if (statuses != null)
+                tweetList.addAll(statuses);
             tweetListContainer.setVisible(true);
+            inUpdate = false;
         });
     }
 
-    /**
-     * Action when the "new tweet" button is clicked.
-     */
-    public void openNewTweetAction() {
-        if(relatedUser.getId() != TwitterClient.get().getCurrentUser().getId())
-            Utils.showNewTweetPage(getAppController(), relatedUser);
-        else
-            Utils.showNewTweetPage(getAppController());
-    }
+    // Nav bar actions
 
     public void showFollowingAction() {
         if(type == ProfileViewType.FOLLOWED)
@@ -398,6 +470,8 @@ public class ProfileView extends ViewController {
 
         // Update button style
         selectMenuLabel(followingTitle);
+        tweetList.clear();
+        userList.clear();
 
         // Change type & reset paging
         type = ProfileViewType.FOLLOWED;
@@ -413,6 +487,8 @@ public class ProfileView extends ViewController {
 
         // Update button style
         selectMenuLabel(followersTitle);
+        tweetList.clear();
+        userList.clear();
 
         // Change type & reset paging
         type = ProfileViewType.FOLLOWERS;
@@ -427,6 +503,8 @@ public class ProfileView extends ViewController {
 
         // Update button style
         selectMenuLabel(favoritesTitle);
+        tweetList.clear();
+        userList.clear();
 
         // Change type & reset paging
         type = ProfileViewType.FAVORITES;
@@ -441,6 +519,8 @@ public class ProfileView extends ViewController {
 
         // Update button style
         selectMenuLabel(tweetsTitle);
+        tweetList.clear();
+        userList.clear();
 
         // Change type & reset paging
         type = ProfileViewType.TWEETS;
@@ -455,6 +535,8 @@ public class ProfileView extends ViewController {
 
         // Update button style
         selectMenuLabel(timelineTitle);
+        tweetList.clear();
+        userList.clear();
 
         // Change type & reset paging
         type = ProfileViewType.TIMELINE;
@@ -463,22 +545,40 @@ public class ProfileView extends ViewController {
         updateTimeline();
     }
 
-    public void filterTweetAction() {
-        filterTimeline(searchValue.getText());
-    }
-
-    public void nextPageAction() {
-        int newPage = paging.getPage() + 1;
-        paging = new Paging(newPage, 30);
-        updateTimeline();
-    }
-
-    public void previousPageAction() {
-        if(paging.getPage() > 1) {
-            int newPage = paging.getPage() - 1;
-            paging = new Paging(newPage, 30);
-            updateTimeline();
+    public void changeModeAction() {
+        if(inReadMode) {
+            timelineRevertMainPanel.play();
+            timelineRevertAvatarSize.play();
+        } else {
+            timelineMainPanel.play();
+            timelineAvatarSize.play();
         }
+
+        inReadMode = !inReadMode;
+    }
+
+    // Left panel actions
+
+    /**
+     * Action when the "new tweet" button is clicked.
+     */
+    public void openNewTweetAction() {
+        if(relatedUser.getId() != TwitterClient.get().getCurrentUser().getId())
+            Utils.showNewTweetPage(getAppController(), relatedUser);
+        else
+            Utils.showNewTweetPage(getAppController());
+    }
+
+    public void filterTweetAction() {
+        // Update button style
+        selectMenuLabel(tweetsTitle);
+        tweetList.clear();
+        userList.clear();
+
+        // Change type & reset paging
+        type = ProfileViewType.TWEETS;
+
+        filterTimeline(searchValue.getText());
     }
 
     public void addWaitingTweetsAction() {

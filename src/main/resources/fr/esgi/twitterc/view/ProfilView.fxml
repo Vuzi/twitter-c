@@ -5,17 +5,25 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import fr.esgi.twitterc.view.component.Icon?>
 
 <!-- Profile view -->
+<?import fr.esgi.twitterc.view.component.Icon?>
 <AnchorPane fx:id="profilePanel" prefHeight="785.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.esgi.twitterc.view.ProfileView">
     <stylesheets>
         <URL value="@style/style.css"/>
     </stylesheets>
     <!-- Content panel -->
-    <AnchorPane prefHeight="232.0" prefWidth="798.0" styleClass="profilePanel" AnchorPane.bottomAnchor="0.0"
+    <AnchorPane fx:id="profileContentPanel" prefHeight="232.0" prefWidth="798.0" styleClass="profilePanel" AnchorPane.bottomAnchor="0.0"
                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="205.0">
+
+        <!-- Profile image & border -->
+        <Pane fx:id="profileImagePanel">
+            <Pane fx:id="profileMainImage" layoutX="50.0" layoutY="-125.0" prefHeight="200.0" prefWidth="200.0"
+                  styleClass="profileImage"/>
+            <Pane layoutX="45.0" layoutY="-130.0" prefHeight="210.0" prefWidth="210.0" styleClass="profileImageBorder"/>
+        </Pane>
+
         <!-- Controls panel -->
         <HBox alignment="CENTER" layoutX="280.0" layoutY="6.0">
             <VBox alignment="CENTER" styleClass="profileInfoItem" onMouseClicked="#showFollowingAction">
@@ -38,17 +46,25 @@
                 <Label fx:id="timelineTitle" styleClass="profileInfoTitle" text="Home"/>
                 <Label styleClass="selectedTab" text=""/>
             </VBox>
+            <VBox alignment="CENTER" styleClass="profileInfoItem" style="-fx-min-width: 50; -fx-border-width: 0;" onMouseClicked="#changeModeAction">
+                <Label styleClass="profileInfoTitle">
+                    <graphic>
+                        <Icon value="EXPAND" size="20"/>
+                    </graphic>
+                </Label>
+            </VBox>
         </HBox>
+
         <!-- Tweets/Users list -->
         <BorderPane prefHeight="365.0" prefWidth="879.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="68.0" AnchorPane.topAnchor="35.0">
             <!-- Tweets/Users list -->
             <center>
-                <ScrollPane styleClass="tweetsContainer" maxWidth="640" minWidth="640">
+                <ScrollPane fx:id="tweetListScrollContainer" styleClass="tweetsContainer" maxWidth="640" minWidth="640">
                     <VBox fx:id="tweetListContainer">
                         <HBox alignment="CENTER" >
                             <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="waitingTweets" visible="false" managed="false" onMouseClicked="#addWaitingTweetsAction" prefWidth="350" prefHeight="32">
                                 <graphic>
-                                    <Icon value="REFRESH" size="20"/>
+                                   <Icon value="REFRESH" size="20"/>
                                 </graphic>
                                 <text>
                                     x nouveaux tweet(s)
@@ -56,27 +72,13 @@
                             </Button>
                         </HBox>
                         <VBox fx:id="tweetListView" maxWidth="640" styleClass="tweets" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-                        <HBox alignment="CENTER" >
-                            <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="previousButton"
-                                    onMouseClicked="#previousPageAction" prefHeight="32">
-                                <graphic>
-                                    <Icon value="CHEVRON_LEFT" size="20"/>
-                                </graphic>
-                            </Button>
-                            <Button styleClass="tweetButton" prefHeight="32" text="     " disable="true"/>
-                            <Button mnemonicParsing="false" styleClass="tweetButton" fx:id="nextButton"
-                                    onMouseClicked="#nextPageAction" prefHeight="32">
-                                <graphic>
-                                    <Icon value="CHEVRON_RIGHT" size="20"/>
-                                </graphic>
-                            </Button>
-                        </HBox>
                     </VBox>
                 </ScrollPane>
             </center>
+
             <!-- Profile information & actions -->
             <left>
-                <VBox layoutY="50.0" prefHeight="358.0" prefWidth="165.0" spacing="10" BorderPane.alignment="CENTER">
+                <VBox fx:id="profileInfoPanel" layoutY="0.0" prefHeight="358.0" prefWidth="165.0" spacing="10" BorderPane.alignment="CENTER">
                     <!-- Name -->
                     <FlowPane alignment="BOTTOM_CENTER">
                         <Label fx:id="userName" alignment="TOP_LEFT" prefHeight="27.0" styleClass="profileInfoTitle" text="Name"/>
@@ -98,8 +100,4 @@
             </left>
         </BorderPane>
     </AnchorPane>
-    <!-- Profile image & border -->
-    <Pane fx:id="profileMainImage" layoutX="50.0" layoutY="85.0" prefHeight="200.0" prefWidth="200.0"
-          styleClass="profileImage"/>
-    <Pane layoutX="45.0" layoutY="80.0" prefHeight="210.0" prefWidth="210.0" styleClass="profileImageBorder"/>
 </AnchorPane>

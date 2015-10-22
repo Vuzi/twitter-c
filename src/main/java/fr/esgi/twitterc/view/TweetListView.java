@@ -116,7 +116,7 @@ public class TweetListView {
         userTag.setText("@" + author.getScreenName());
 
         // Set date
-        date.setText(status.getCreatedAt().toString());
+        date.setText(Utils.formatDate(status.getCreatedAt()));
 
         // Set content
         content.getChildren().clear();
@@ -341,5 +341,9 @@ public class TweetListView {
     public void showResponseUserAction() {
         if(responseToValue != null)
             Utils.showProfilePage(appController, responseToValue.getUser());
+    }
+
+    public void seeTweetOnTweeter() {
+        Utils.openWebPage("https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId());
     }
 }

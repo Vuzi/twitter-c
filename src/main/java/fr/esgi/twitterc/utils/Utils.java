@@ -7,6 +7,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
 import javafx.concurrent.Task;
+import org.ocpsoft.prettytime.PrettyTime;
 import twitter4j.Status;
 import twitter4j.User;
 
@@ -75,6 +76,16 @@ public final class Utils {
         } else {
             Logger.getLogger(Utils.class.getName()).info("Desktop or browsing operation is not supported");
         }
+    }
+
+    /**
+     * Format the provided date to a "time ago" human readable format.
+     *
+     * @param date The date to format.
+     * @return The formated date.
+     */
+    public static String formatDate(Date date) {
+        return new PrettyTime(new Locale("fr")).format(date);
     }
 
     /**
