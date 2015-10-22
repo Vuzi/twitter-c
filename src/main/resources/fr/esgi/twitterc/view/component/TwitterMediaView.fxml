@@ -1,0 +1,17 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<fx:root type="GridPane" xmlns:fx="http://javafx.com/fxml">
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" fx:id="mediaContent" >
+
+    </VBox>
+    <VBox alignment="BOTTOM_CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" >
+        <ImageView fx:id="showButton" preserveRatio="true" fitWidth="60" smooth="true" opacity="0.5" onMouseClicked="#showMedia">
+            <image>
+                <Image url="@../image/plus-icon.png" />
+            </image>
+        </ImageView>
+    </VBox>
+</fx:root>

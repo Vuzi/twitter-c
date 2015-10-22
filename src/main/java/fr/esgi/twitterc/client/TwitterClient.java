@@ -125,6 +125,7 @@ public class TwitterClient {
                 if(onConnected != null)
                     onConnected.apply(this);
             } catch (TwitterException e) {
+                twitter.setOAuthAccessToken(null);
                 throw new TwitterClientException("Error while using the saved access token", e);
             }
         } else
