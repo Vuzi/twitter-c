@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
-public class TwitterMediaView extends GridPane {
+public class TwitterMediaVideoView extends GridPane {
 
     @FXML
     private VBox mediaContent;
@@ -24,12 +24,12 @@ public class TwitterMediaView extends GridPane {
     private static final double MEDIA_PREVIEW_HEIGHT = 200;
     private static final double MEDIA_MAX_WIDTH = 590;
 
-    public TwitterMediaView(Image image) {
+    public TwitterMediaVideoView(Image image) {
         this();
         setImage(image);
     }
 
-    public TwitterMediaView() {
+    public TwitterMediaVideoView() {
         final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/esgi/twitterc/view/component/TwitterMediaView.fxml"));
 
         fxmlLoader.setRoot(this);
@@ -42,7 +42,7 @@ public class TwitterMediaView extends GridPane {
         }
     }
 
-    protected void setImage(Image image) {
+    public void setImage(Image image) {
         this.image = image;
 
         mediaContent.getChildren().clear();
@@ -55,45 +55,56 @@ public class TwitterMediaView extends GridPane {
 
         imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
-        imageView.setFitWidth(image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH);
 
         if(image.getHeight() > MEDIA_PREVIEW_HEIGHT * 1.3)
             showImagePreview();
-        else
-            showImageFull();
+        else {
+            imageView.setFitWidth(image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH);
+            showButton.setVisible(false);
+        }
 
         mediaContent.getChildren().add(imageView);
     }
 
-    protected void showImagePreview() {
-        imageView.setViewport(new Rectangle2D(0, 0, image.getWidth(), MEDIA_PREVIEW_HEIGHT));
+    private void showImagePreview() {
+        imageView.setViewport(new Rectangle2D(0, 0,
+                image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH, MEDIA_PREVIEW_HEIGHT));
         showButton.setOpacity(0.5);
     }
 
-    protected void showImageFull() {
-        imageView.setViewport(null);
-        showButton.setVisible(false);
+    private void showImage() {
+        imageView.setViewport(new Rectangle2D(0, 0,
+                image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH, image.getHeight()));
+        showButton.setOpacity(0.1);
     }
 
     @FXML
-    protected void showMedia() {
+    public void showMedia() {
         if(image == null)
             return;
 
-        showImageFull();
-        preview = false;
+        if(preview)
+            showImage();
+        else
+            showImagePreview();
+
+        preview = !preview;
     }
 
     @FXML
-    protected void hoverButton() {
+    public void hoverButton() {
         if(preview)
             showButton.setOpacity(0.9);
+        else
+            showButton.setOpacity(0.7);
     }
 
     @FXML
-    protected void outButton() {
+    public void outButton() {
         if(preview)
             showButton.setOpacity(0.5);
+        else
+            showButton.setOpacity(0.1);
     }
 
 }
