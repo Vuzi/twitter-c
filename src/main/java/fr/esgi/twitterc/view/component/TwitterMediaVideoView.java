@@ -1,110 +1,91 @@
 package fr.esgi.twitterc.view.component;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 
-import java.io.IOException;
+public class TwitterMediaVideoView extends TwitterMediaView {
 
-public class TwitterMediaVideoView extends GridPane {
 
-    @FXML
-    private VBox mediaContent;
-    @FXML
-    private ImageView showButton;
+    private String videoURL;
+    private Media media;
 
-    private Image image;
-    private ImageView imageView;
-    private boolean preview = true;
-
-    private static final double MEDIA_PREVIEW_HEIGHT = 200;
-    private static final double MEDIA_MAX_WIDTH = 590;
-
-    public TwitterMediaVideoView(Image image) {
+    public TwitterMediaVideoView(Image previewImage, String videoURL) {
         this();
-        setImage(image);
+        setVideo(previewImage, videoURL);
     }
 
     public TwitterMediaVideoView() {
-        final FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fr/esgi/twitterc/view/component/TwitterMediaView.fxml"));
-
-        fxmlLoader.setRoot(this);
-        fxmlLoader.setController(this);
-
-        try {
-            fxmlLoader.load();
-        } catch (final IOException exception) {
-            throw new RuntimeException(exception);
-        }
+        super();
     }
 
-    public void setImage(Image image) {
-        this.image = image;
+    public void setVideo(Image previewImage, String videoURL) {
+        setImage(previewImage);
 
-        mediaContent.getChildren().clear();
-        imageView = null;
-        preview = true;
-        showButton.setVisible(true);
-
-        if(image == null)
+        if(imageView == null || videoURL == null)
             return;
 
-        imageView = new ImageView(image);
-        imageView.setPreserveRatio(true);
-
-        if(image.getHeight() > MEDIA_PREVIEW_HEIGHT * 1.3)
-            showImagePreview();
-        else {
-            imageView.setFitWidth(image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH);
-            showButton.setVisible(false);
-        }
-
-        mediaContent.getChildren().add(imageView);
+        this.videoURL = videoURL;
     }
 
-    private void showImagePreview() {
-        imageView.setViewport(new Rectangle2D(0, 0,
-                image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH, MEDIA_PREVIEW_HEIGHT));
-        showButton.setOpacity(0.5);
-    }
+    private void showVideo() {
+        videoControls.setOpacity(0);
 
-    private void showImage() {
-        imageView.setViewport(new Rectangle2D(0, 0,
-                image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH, image.getHeight()));
-        showButton.setOpacity(0.1);
+        if(media == null)
+            media = new Media(videoURL);
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+        MediaView mediaView = new MediaView(mediaPlayer);
+        mediaView.setFitWidth(590);
+
+        mediaPlayer.setOnReady(() -> {
+            mediaContent.getChildren().set(0, mediaView);
+            mediaPlayer.play();
+        });
+
+        mediaPlayer.setOnEndOfMedia(() -> {
+            videoControls.setOpacity(1);
+            mediaContent.getChildren().set(0, imageView);
+        });
+
+        sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene == null) {
+                mediaPlayer.stop();
+                videoControls.setOpacity(1);
+                mediaContent.getChildren().set(0, imageView);
+            }
+        });
     }
 
     @FXML
-    public void showMedia() {
-        if(image == null)
-            return;
+    protected void showMedia() {
+        super.showMedia();
 
-        if(preview)
-            showImage();
-        else
-            showImagePreview();
-
-        preview = !preview;
+        videoControls.setVisible(true);
+        videoControls.setManaged(true);
     }
 
     @FXML
-    public void hoverButton() {
+    protected void playMedia() {
+        if (!preview)
+            showVideo();
+    }
+
+    @FXML
+    protected void hoverButton() {
         if(preview)
             showButton.setOpacity(0.9);
         else
-            showButton.setOpacity(0.7);
+            playButton.setOpacity(0.9);
     }
 
     @FXML
-    public void outButton() {
+    protected void outButton() {
         if(preview)
             showButton.setOpacity(0.5);
         else
-            showButton.setOpacity(0.1);
+            playButton.setOpacity(0.5);
     }
-
 }

@@ -13,16 +13,22 @@ import java.io.IOException;
 public class TwitterMediaView extends GridPane {
 
     @FXML
-    private VBox mediaContent;
+    protected VBox mediaContent;
     @FXML
-    private ImageView showButton;
+    protected ImageView showButton;
+    @FXML
+    protected VBox imageControls;
+    @FXML
+    protected ImageView playButton;
+    @FXML
+    protected VBox videoControls;
 
-    private Image image;
-    private ImageView imageView;
-    private boolean preview = true;
+    protected Image image;
+    protected ImageView imageView;
+    protected boolean preview = true;
 
-    private static final double MEDIA_PREVIEW_HEIGHT = 200;
-    private static final double MEDIA_MAX_WIDTH = 590;
+    protected static final double MEDIA_PREVIEW_HEIGHT = 200;
+    protected static final double MEDIA_MAX_WIDTH = 590;
 
     public TwitterMediaView(Image image) {
         this();
@@ -48,7 +54,10 @@ public class TwitterMediaView extends GridPane {
         mediaContent.getChildren().clear();
         imageView = null;
         preview = true;
-        showButton.setVisible(true);
+        imageControls.setVisible(true);
+        imageControls.setManaged(true);
+        videoControls.setVisible(false);
+        videoControls.setManaged(false);
 
         if(image == null)
             return;
@@ -72,11 +81,21 @@ public class TwitterMediaView extends GridPane {
 
     protected void showImageFull() {
         imageView.setViewport(null);
-        showButton.setVisible(false);
+        imageControls.setVisible(false);
+        imageControls.setManaged(false);
     }
 
     @FXML
     protected void showMedia() {
+        if(image == null)
+            return;
+
+        showImageFull();
+        preview = false;
+    }
+
+    @FXML
+    protected void playMedia() {
         if(image == null)
             return;
 
