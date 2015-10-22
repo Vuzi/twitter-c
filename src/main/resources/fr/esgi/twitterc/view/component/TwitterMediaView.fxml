@@ -4,7 +4,7 @@
 <?import javafx.scene.image.Image?>
 
 <fx:root type="GridPane" xmlns:fx="http://javafx.com/fxml" alignment="CENTER">
-    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" fx:id="mediaContent" alignment="CENTER">
+    <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" fx:id="mediaContent" alignment="CENTER" spacing="10">
 
     </VBox>
     <VBox alignment="BOTTOM_CENTER" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-padding: 10">

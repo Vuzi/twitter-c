@@ -156,27 +156,12 @@ public class TweetListView {
         // Update media
         medias.getChildren().clear();
         for(ExtendedMediaEntity mediaEntity : status.getExtendedMediaEntities()) {
+            System.out.println(mediaEntity.getType());
             if(mediaEntity.getType().equals("photo")) {
                 Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
-
-                    /*
-                    Rectangle2D croppedPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() : 601, 200);
-
-                    ImageView imageView = new ImageView(image);
-                    imageView.setPreserveRatio(true);
-                    imageView.setViewport(croppedPortion);
-
-                    imageView.setOnMouseClicked(event -> {
-                        Rectangle2D fullPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() :
-                                601, image.getHeight());
-                        imageView.setViewport(fullPortion);
-                    });*/
-
-                    //TwitterMediaView mediaView = new TwitterMediaView(image);
-
                     medias.getChildren().add(new TwitterMediaView(image));
                 });
-            } else if(mediaEntity.getType().equals("video")) {
+            } else if(mediaEntity.getType().equals("video") || mediaEntity.getType().equals("animated_gif")) {
                 // If video, show image preview
                 Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
                     Rectangle2D croppedPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() : 601, 200);
@@ -194,6 +179,9 @@ public class TweetListView {
                             Media media = new Media("http" + mediaEntity.getVideoVariants()[0].getUrl().substring(5));
                             MediaPlayer mediaPlayer = new MediaPlayer(media);
                             mediaPlayer.play();
+
+                            if(mediaEntity.getType().equals("animated_gif"))
+                                mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 
                             MediaView mediaView = new MediaView(mediaPlayer);
                             mediaView.setFitWidth(600);
