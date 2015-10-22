@@ -39,7 +39,6 @@ public class CustomClassLoader extends ClassLoader{
         }
     }
 
-    // ========= delegating methods =============
     @Override
     public URL getResource( String name ) {
         return parent.getResource(name);

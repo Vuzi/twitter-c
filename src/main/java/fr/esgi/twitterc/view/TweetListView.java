@@ -3,17 +3,23 @@ package fr.esgi.twitterc.view;
 import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.main.TwitterCController;
 import fr.esgi.twitterc.utils.Utils;
+import fr.esgi.twitterc.view.component.TwitterMediaView;
 import fr.esgi.twitterc.view.controller.AppController;
 import fr.esgi.twitterc.view.controller.ViewController;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 import twitter4j.*;
 
 import java.util.ArrayList;
@@ -147,18 +153,82 @@ public class TweetListView {
             addFavoriteButton.setText("Ajouter aux favoris (" + status.getFavoriteCount() + ")");
         }
 
-        // Update media images
+        // Update media
         medias.getChildren().clear();
-        for(MediaEntity mediaEntity : status.getMediaEntities()) {
+        for(ExtendedMediaEntity mediaEntity : status.getExtendedMediaEntities()) {
             if(mediaEntity.getType().equals("photo")) {
                 Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
+
+                    /*
+                    Rectangle2D croppedPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() : 601, 200);
+
                     ImageView imageView = new ImageView(image);
                     imageView.setPreserveRatio(true);
-                    imageView.fitWidthProperty().bind(medias.maxWidthProperty());
+                    imageView.setViewport(croppedPortion);
+
+                    imageView.setOnMouseClicked(event -> {
+                        Rectangle2D fullPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() :
+                                601, image.getHeight());
+                        imageView.setViewport(fullPortion);
+                    });*/
+
+                    //TwitterMediaView mediaView = new TwitterMediaView(image);
+
+                    medias.getChildren().add(new TwitterMediaView(image));
+                });
+            } else if(mediaEntity.getType().equals("video")) {
+                // If video, show image preview
+                Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
+                    Rectangle2D croppedPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() : 601, 200);
+
+                    ImageView imageView = new ImageView(image);
+                    imageView.setPreserveRatio(true);
+                    imageView.setViewport(croppedPortion);
+
+                    imageView.setOnMouseClicked(event -> {
+                        Rectangle2D fullPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() :
+                                601, image.getHeight());
+                        imageView.setViewport(fullPortion);
+                        imageView.setOnMouseClicked(event1 -> {
+
+                            Media media = new Media("http" + mediaEntity.getVideoVariants()[0].getUrl().substring(5));
+                            MediaPlayer mediaPlayer = new MediaPlayer(media);
+                            mediaPlayer.play();
+
+                            MediaView mediaView = new MediaView(mediaPlayer);
+                            mediaView.setFitWidth(600);
+                            medias.getChildren().remove(imageView);
+                            medias.getChildren().add(mediaView);
+                        });
+                    });
+
                     medias.getChildren().add(imageView);
                 });
             }
+
         }
+
+
+        /*
+        for(MediaEntity mediaEntity : status.getMediaEntities()) {
+            if(mediaEntity.getType().equals("photo")) {
+                Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
+                    Rectangle2D croppedPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() : 601, 200);
+
+                    ImageView imageView = new ImageView(image);
+                    imageView.setPreserveRatio(true);
+                    imageView.setViewport(croppedPortion);
+
+                    imageView.setOnMouseClicked(event -> {
+                        Rectangle2D fullPortion = new Rectangle2D(0, 0, image.getWidth() < 601 ? image.getWidth() :
+                                601, image.getHeight());
+                        imageView.setViewport(fullPortion);
+                    });
+
+                    medias.getChildren().add(imageView);
+                });
+            }
+        }*/
 
         // Set responses information
         // Too much data ?

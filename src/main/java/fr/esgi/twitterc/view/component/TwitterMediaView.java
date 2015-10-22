@@ -22,7 +22,7 @@ public class TwitterMediaView extends GridPane {
     private boolean preview = true;
 
     private static final double MEDIA_PREVIEW_HEIGHT = 200;
-    private static final double MEDIA_MAX_WIDTH = 601;
+    private static final double MEDIA_MAX_WIDTH = 590;
 
     public TwitterMediaView(Image image) {
         this();
@@ -48,6 +48,7 @@ public class TwitterMediaView extends GridPane {
         mediaContent.getChildren().clear();
         imageView = null;
         preview = true;
+        showButton.setVisible(true);
 
         if(image == null)
             return;
@@ -55,18 +56,23 @@ public class TwitterMediaView extends GridPane {
         imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
 
-        showImagePreview();
+        if(image.getHeight() > MEDIA_PREVIEW_HEIGHT * 1.3)
+            showImagePreview();
+        else {
+            imageView.setFitWidth(image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH);
+            showButton.setVisible(false);
+        }
 
         mediaContent.getChildren().add(imageView);
     }
 
-    private void showImage() {
+    private void showImagePreview() {
         imageView.setViewport(new Rectangle2D(0, 0,
                 image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH, MEDIA_PREVIEW_HEIGHT));
         showButton.setOpacity(0.5);
     }
 
-    private void showImagePreview() {
+    private void showImage() {
         imageView.setViewport(new Rectangle2D(0, 0,
                 image.getWidth() < MEDIA_MAX_WIDTH ? image.getWidth() : MEDIA_MAX_WIDTH, image.getHeight()));
         showButton.setOpacity(0.1);
@@ -83,6 +89,22 @@ public class TwitterMediaView extends GridPane {
             showImagePreview();
 
         preview = !preview;
+    }
+
+    @FXML
+    public void hoverButton() {
+        if(preview)
+            showButton.setOpacity(0.9);
+        else
+            showButton.setOpacity(0.7);
+    }
+
+    @FXML
+    public void outButton() {
+        if(preview)
+            showButton.setOpacity(0.5);
+        else
+            showButton.setOpacity(0.1);
     }
 
 }

@@ -1,8 +1,5 @@
 package fr.esgi.twitterc.view.component;
 
-/**
- * Created by Vuzi on 29/09/2015.
- */
 import java.io.IOException;
 
 import javafx.beans.property.DoubleProperty;
@@ -18,6 +15,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 
+/**
+ * Class used to display custom font icons.
+ */
 public class Icon extends VBox{
     public final static String DEFAULT_ICON_SIZE = "16.0";
 

@@ -4,7 +4,6 @@ import fr.esgi.twitterc.client.TwitterClient;
 import fr.esgi.twitterc.client.TwitterClientException;
 import fr.esgi.twitterc.utils.Utils;
 import fr.esgi.twitterc.view.controller.ViewController;
-import javafx.concurrent.Worker;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
