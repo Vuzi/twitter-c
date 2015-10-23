@@ -92,6 +92,15 @@ public class TwitterCController extends AppController {
     }
 
     @Override
+    protected void onWindowDeletion() {
+        if(getWindows().isEmpty()) {
+            Logger.getLogger(this.getClass().getName()).info("No more window displayed");
+            showNotification("Information", "L'application est maintenant réduite dans la barre des tâches et " +
+                    "continuera de reçevoir vos tweets");
+        }
+    }
+
+    @Override
     protected void onEnd() {
         // Destroy the stream when the application is stopped
         if(twitterStream != null) {

@@ -31,6 +31,16 @@ public abstract class AppController extends Application {
         onEnd();
     }
 
+
+    /**
+     * Called on the creation of the application controller.
+     */
+    protected void onCreation() {}
+
+    protected void onWindowCreation() {}
+
+    protected void onWindowDeletion() {}
+
     protected abstract void onEnd();
 
     /**
@@ -46,11 +56,6 @@ public abstract class AppController extends Application {
      * @return The image of the application.
      */
     protected abstract Image getAppIcon();
-
-    /**
-     * Called on the creation of the application controller.
-     */
-    protected void onCreation() {}
 
     /**
      * Create a window, and return its controller. The view will be initialized with the provided panel name, and shown.
@@ -93,9 +98,9 @@ public abstract class AppController extends Application {
             // Delete the controller
             controller.onDeletion();
             windows.remove(controller);
+            onWindowDeletion();
         });
-        //window.setMinHeight(600);
-        //window.setMinWidth(800);
+        onWindowCreation();
         window.show();
 
         // Add to the list

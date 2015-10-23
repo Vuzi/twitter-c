@@ -222,8 +222,8 @@ public class ProfileView extends ViewController {
     protected void onHide() {
         Logger.getLogger(this.getClass().getName()).info(MessageFormat.format("Hiding profile view for user : {0}, {1}", relatedUser.getScreenName(), relatedUser.getName()));
 
+        // Close stream
         twitterStream.clearListeners();
-
         Utils.asyncTask(() -> {
             twitterStream.shutdown();
             return 0;
@@ -373,13 +373,6 @@ public class ProfileView extends ViewController {
      * Update the timeline information, according to the actual type of list of the controller.
      */
     private void updateTimeline() {
-
-        // Empty all the lists & hide buttons
-        //tweetList.clear();
-        //userList.clear();
-
-        //tweetListContainer.setVisible(false);
-
         // Clear loaded data
         waitingTweetList.clear();
         updateWaitingTimeline();
