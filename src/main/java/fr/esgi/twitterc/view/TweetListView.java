@@ -101,8 +101,10 @@ public class TweetListView {
             responseAtPanel.setManaged(true);
 
             Utils.asyncTask(() -> TwitterClient.client().showStatus(status.getInReplyToStatusId()), replied -> {
-                responseTo.setText("@" + replied.getUser().getScreenName());
-                responseToValue = replied;
+                if(replied != null) {
+                    responseTo.setText("@" + replied.getUser().getScreenName());
+                    responseToValue = replied;
+                }
             });
         } else {
             responseAtPanel.setVisible(false);

@@ -2,6 +2,8 @@ package fr.esgi.twitterc.utils;
 
 import com.twitter.Extractor;
 import fr.esgi.twitterc.view.controller.AppController;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -19,6 +21,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
@@ -126,7 +131,7 @@ public final class Utils {
 
     /**
      * Create and run an async task using the provided function as the asynchronous operation,
-     * and the callback as the success operation. Error are ignored.
+     * and the callback as the success operation. Error are ignored and returned as null values.
      *
      * @param asyncOperation The asynchronous operation.
      * @param callback The success callback.
@@ -134,27 +139,16 @@ public final class Utils {
      */
     public static <V> void asyncTask(ProducerWithThrow<V> asyncOperation, Consumer<V> callback) {
 
-        // Create the task
-        Task<V> task = new Task<V>() {
-            @Override
-            protected V call() throws Exception {
-                try {
-                    return asyncOperation.apply();
-                } catch (Throwable throwable) {
-                    new Exception(throwable);
-                }
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                return asyncOperation.apply();
+            } catch (Throwable throwable) {
                 return null;
             }
-        };
-
-        // Callback
-        if(callback != null)
-            task.setOnSucceeded(event -> callback.apply(task.getValue()));
-
-        // Run on another thread
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
+        }).thenAcceptAsync(v -> {
+            if(callback != null)
+                Platform.runLater(() -> callback.apply(v));
+        });
     }
 
     /**

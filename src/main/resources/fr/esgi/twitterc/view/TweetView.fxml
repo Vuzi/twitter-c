@@ -8,16 +8,19 @@
 
 <?import javafx.scene.control.ScrollPane?>
 <AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="fr.esgi.twitterc.view.TweetView">
+            fx:controller="fr.esgi.twitterc.view.TweetView" prefHeight="400"  prefWidth="635">
     <stylesheets>
         <URL value="@style/style.css"/>
     </stylesheets>
-    <VBox AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" alignment="CENTER">
-        <!-- Tweet -->
-        <VBox fx:id="tweet" styleClass="tweets" alignment="CENTER" maxWidth="640" minWidth="640" />
-        <!-- Replies -->
-        <ScrollPane styleClass="tweetsContainer" maxWidth="640" minWidth="640">
-            <VBox fx:id="replies" maxWidth="640" styleClass="tweets" spacing="10"/>
-        </ScrollPane>
-    </VBox>
+    <ScrollPane styleClass="tweetsContainer" AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+        <content>
+            <VBox alignment="CENTER" GridPane.columnIndex="0">
+                <!-- Tweet -->
+                <VBox fx:id="tweet" styleClass="tweets" alignment="CENTER"/>
+                <!-- Replies -->
+                <VBox fx:id="replies" alignment="CENTER" styleClass="tweets" spacing="10"/>
+            </VBox>
+        </content>
+    </ScrollPane>
 </AnchorPane>

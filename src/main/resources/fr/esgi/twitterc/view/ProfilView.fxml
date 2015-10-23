@@ -19,9 +19,9 @@
 
         <!-- Profile image & border -->
         <Pane fx:id="profileImagePanel">
-            <Pane fx:id="profileMainImage" layoutX="50.0" layoutY="-125.0" prefHeight="200.0" prefWidth="200.0"
+            <Pane fx:id="profileMainImage" layoutX="55.0" layoutY="-125.0" prefHeight="200.0" prefWidth="200.0"
                   styleClass="profileImage"/>
-            <Pane layoutX="45.0" layoutY="-130.0" prefHeight="210.0" prefWidth="210.0" styleClass="profileImageBorder"/>
+            <Pane layoutX="50.0" layoutY="-130.0" prefHeight="210.0" prefWidth="210.0" styleClass="profileImageBorder"/>
         </Pane>
 
         <!-- Controls panel -->
