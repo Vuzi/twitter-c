@@ -76,9 +76,11 @@ public class TwitterMediaVideoView extends TwitterMediaView {
 
     private void cleanVideo() {
         playing = false;
-        mediaPlayer.stop();
-        mediaPlayer.dispose();
-        mediaPlayer = null;
+        if(mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
 
         mediaContent.getChildren().set(0, imageView);
     }

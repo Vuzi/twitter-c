@@ -158,11 +158,23 @@ public class TweetListView {
                         medias.getChildren().add(new TwitterMediaView(image));
                 });
             } else if(mediaEntity.getType().equals("video") || mediaEntity.getType().equals("animated_gif")) {
+                // Multiples videos can be given, try to get the better MP4 one
+                ExtendedMediaEntity.Variant selectedVariant = null;
+                for(ExtendedMediaEntity.Variant variant : mediaEntity.getVideoVariants()) {
+                    if(variant.getContentType().equals("video/mp4")) {
+                        if(selectedVariant == null || variant.getBitrate() > selectedVariant.getBitrate())
+                            selectedVariant = variant;
+                    }
+                }
+
                 // If video, show image preview
-                Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
-                    if(image != null && mediaEntity.getVideoVariants().length >= 1)
-                        medias.getChildren().add(new TwitterMediaVideoView(image, "http" + mediaEntity.getVideoVariants()[1].getUrl().substring(5)));
-                });
+                if(selectedVariant != null) {
+                    final ExtendedMediaEntity.Variant finalSelectedVariant = selectedVariant;
+                    Utils.asyncTask(() -> new Image(mediaEntity.getMediaURL()), image -> {
+                        if(image != null)
+                            medias.getChildren().add(new TwitterMediaVideoView(image, "http" + finalSelectedVariant.getUrl().substring(5)));
+                    });
+                }
             }
 
         }
